@@ -46,9 +46,8 @@ export const Sidebar = ({ user }: SidebarProps) => {
     >
       <Stack
         direction="row"
-        alignItems="center"
         spacing={1.5}
-        sx={{ px: 1, mb: 4 }}
+        sx={{ px: 1, mb: 4, alignItems: "center" }}
       >
         <Box
           sx={{
@@ -67,7 +66,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
           {navItems.map((item) => (
             <ListItemButton
               key={item.path}
-              scomponent={NavLink}
+              component={NavLink}
               to={item.path}
               end={item.path === "/"}
               sx={{
@@ -90,8 +89,8 @@ export const Sidebar = ({ user }: SidebarProps) => {
             >
               <ListItemText
                 primary={item.label}
-                primaryTypographyProps={{
-                  fontSize: 14,
+                slotProps={{
+                  primary: { sx: { fontSize: 14 } },
                 }}
               />
             </ListItemButton>
@@ -99,7 +98,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
         </List>
         <Divider sx={{ borderColor: "rgba(255,255,255,0.1)" }} />
       </Box>
-      <Stack direction="row" alignItems="center" spacing={1.5} sx={{ px: 1 }}>
+      <Stack direction="row" spacing={1.5} sx={{ px: 1, alignItems: "center" }}>
         <Avatar
           sx={{
             bgcolor: "#F4A6C1",

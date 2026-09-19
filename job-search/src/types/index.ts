@@ -35,3 +35,10 @@ export interface Application {
   contacts: Contact[];
   interviews: Interview[];
 }
+
+export interface DashboardStats {
+  active: number;
+  interviews: number;
+  responseRate: number;
+  offers: number;
+}
