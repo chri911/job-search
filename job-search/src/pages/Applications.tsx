@@ -1,14 +1,24 @@
-import { Typography } from "@mui/material";
+import { Box } from "@mui/material";
+import { ApplicationsHeader } from "../components/ApplicationsHeader";
+import { useApplications } from "../hooks/useApplications";
+import { StatsCards } from "../components/StatsCards";
 
 export const Applications = () => {
+  const { data: applications } = useApplications();
+  const handleAddClick = () => {
+    console.log("Add application clicked");
+  };
   return (
     <>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-        Applications
-      </Typography>
-      <Typography sx={{ color: "text.secondary" }}>
-        Track every opportunity from first contact to offer.
-      </Typography>
+      <Box>
+        <ApplicationsHeader
+          title="Applications"
+          subtitle="Track every opportunity from first contact to offer."
+          total={applications?.length || 0}
+          onAddClick={handleAddClick}
+        />
+        <StatsCards />
+      </Box>
     </>
   );
 };

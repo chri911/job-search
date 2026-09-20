@@ -6,9 +6,9 @@ export const applications = [
     location: "Poland",
     workMode: "remote",
     status: "interview",
-    appliedAt: "2026-09-08",
+    appliedAt: "2026-09-17",
     nextStep: "Technical",
-    nextStepDate: "2026-09-12",
+    nextStepDate: "2026-09-22",
   },
   {
     id: "2",

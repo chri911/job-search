@@ -41,4 +41,8 @@ export interface DashboardStats {
   interviews: number;
   responseRate: number;
   offers: number;
+  addedThisWeek: number;
+  offersAwaitingReply: number;
+  interviewsScheduledNext: number;
+  responseRateDelta?: number; // Optional, can be positive or negative
 }

@@ -29,6 +29,7 @@ app.get("/api/dashboard/stats", (req, res) => {
       a.status === "offer" ||
       a.status === "rejected",
   ).length;
+
   const responseRate =
     applications.length > 0
       ? Math.round((responded / applications.length) * 100)
@@ -36,11 +37,50 @@ app.get("/api/dashboard/stats", (req, res) => {
 
   const offers = applications.filter((a) => a.status === "offer").length;
 
+  const onWeekAgo = new Date();
+
+  onWeekAgo.setDate(onWeekAgo.getDate() - 7);
+
+  const addedThisWeek = applications.filter(
+    (a) => new Date(a.appliedAt) >= onWeekAgo,
+  ).length;
+
+  const oneMonthAgo = new Date();
+  oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+  const oldApplications = applications.filter(
+    (a) => new Date(a.appliedAt) < oneMonthAgo,
+  );
+  const oldResponded = oldApplications.filter(
+    (a) =>
+      a.status === "interview" ||
+      a.status === "offer" ||
+      a.status === "rejected",
+  ).length;
+  const oldResponseRate =
+    oldApplications.length > 0
+      ? Math.round((oldResponded / oldApplications.length) * 100)
+      : 0;
+
+  const responseRateDelta = responseRate - oldResponseRate;
+
+  const offersAwaitingReply = applications.filter(
+    (a) => a.status === "offer" && a.nextStep,
+  ).length;
+
+  const interviewsScheduledNext = applications.filter(
+    (a) => a.status === "interview" && a.nextStepDate,
+  ).length;
+
   res.json({
     active,
     interviews,
     responseRate,
     offers,
+    addedThisWeek,
+    offersAwaitingReply,
+    interviewsScheduledNext,
+    responseRateDelta,
   });
 });
 
