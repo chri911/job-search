@@ -44,5 +44,7 @@ export interface DashboardStats {
   addedThisWeek: number;
   offersAwaitingReply: number;
   interviewsScheduledNext: number;
-  responseRateDelta?: number; // Optional, can be positive or negative
+  responseRateDelta?: number;
 }
+
+export type ViewMode = "list" | "board";

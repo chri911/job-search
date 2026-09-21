@@ -51,12 +51,14 @@ app.get("/api/dashboard/stats", (req, res) => {
   const oldApplications = applications.filter(
     (a) => new Date(a.appliedAt) < oneMonthAgo,
   );
+
   const oldResponded = oldApplications.filter(
     (a) =>
       a.status === "interview" ||
       a.status === "offer" ||
       a.status === "rejected",
   ).length;
+
   const oldResponseRate =
     oldApplications.length > 0
       ? Math.round((oldResponded / oldApplications.length) * 100)
