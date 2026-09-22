@@ -1,5 +1,5 @@
 import { Outlet } from "react-router-dom";
-import { Box } from "@mui/material";
+import { Box, Button } from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { ContentContainer } from "./components/ContentContainer";
@@ -22,7 +22,13 @@ function App() {
           overflow: "auto",
         }}
       >
-        <TopBar />
+        <TopBar
+          actions={
+            <Button variant="contained" color="accent">
+              Add application
+            </Button>
+          }
+        />
         <ContentContainer>
           <Outlet />
         </ContentContainer>

@@ -1,8 +1,4 @@
-export type ApplicationStatus =
-  | "applied"
-  | "interviewing"
-  | "offer"
-  | "rejected";
+export type ApplicationStatus = "applied" | "interview" | "offer" | "rejected";
 
 export interface Contact {
   id: string;
@@ -27,11 +23,11 @@ export interface Application {
   company: string;
   position: string;
   location: string;
-  workType: "remote" | "onsite" | "hybrid";
+  workMode: "remote" | "onsite" | "hybrid";
   status: ApplicationStatus;
   nextStep: string;
   nextStepDate: string; // ISO date string
-  dateApplied: string; // ISO date string
+  appliedAt: string; // ISO date string
   contacts: Contact[];
   interviews: Interview[];
 }

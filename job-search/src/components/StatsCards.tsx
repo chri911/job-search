@@ -87,10 +87,9 @@ const buildCards = (stats: DashboardStats | undefined): StatsCardProps[] => {
     {
       label: "Offers",
       value: stats?.offers ?? 0,
-      hintValue: stats?.offersAwaitingReply
-        ? `${stats.offersAwaitingReply}`
+      hintLabel: stats?.offersAwaitingReply
+        ? `${stats.offersAwaitingReply} awaiting reply`
         : undefined,
-      hintLabel: stats?.offersAwaitingReply ? "awaiting reply" : undefined,
     },
   ];
 };
@@ -100,12 +99,17 @@ export const StatsCards = () => {
 
   if (isError) {
     return (
-      <Box sx={{ mb: 3 }}>
-        <Alert severity="error">
-          Failed to load stats
-          {error instanceof Error ? `: ${error.message}` : ""}
-        </Alert>
-      </Box>
+      <Grid container spacing={2} sx={{ mb: 3 }}>
+        <Grid size={12}>
+          <Alert
+            severity="error"
+            sx={{ minHeight: 96, display: "flex", alignItems: "center" }}
+          >
+            Failed to load stats
+            {error instanceof Error ? `: ${error.message}` : ""}
+          </Alert>
+        </Grid>
+      </Grid>
     );
   }
   const cards = buildCards(stats);

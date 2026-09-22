@@ -1,6 +1,11 @@
 import { Box } from "@mui/material";
+import type { ReactNode } from "react";
 
-export function TopBar() {
+interface TopBarProps {
+  actions?: ReactNode;
+}
+
+export function TopBar({ actions }: TopBarProps) {
   return (
     <Box
       sx={{
@@ -11,6 +16,8 @@ export function TopBar() {
         justifyContent: "flex-end",
         borderBottom: "1px solid #EDEFF3",
       }}
-    ></Box>
+    >
+      {actions}
+    </Box>
   );
 }

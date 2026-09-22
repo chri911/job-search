@@ -5,17 +5,15 @@ import { StatsCards } from "../components/StatsCards";
 import { useState } from "react";
 import type { ApplicationStatus, ViewMode } from "../types";
 import { FiltersBar } from "../components/FiltersBar";
+import { ApplicationsTable } from "../components/ApplcationsTable";
 
 export const Applications = () => {
-  const { data: applications } = useApplications();
+  const { data: applications, isLoading, isError } = useApplications();
   const [searchValue, setSearchValue] = useState("");
   const [statusFilter, setStatusFiler] = useState<ApplicationStatus | "all">(
     "all",
   );
   const [viewMode, setViewMode] = useState<ViewMode>("list");
-  const handleAddClick = () => {
-    console.log("Add application clicked");
-  };
   return (
     <>
       <Box>
@@ -23,7 +21,6 @@ export const Applications = () => {
           title="Applications"
           subtitle="Track every opportunity from first contact to offer."
           total={applications?.length || 0}
-          onAddClick={handleAddClick}
         />
         <StatsCards />
         <FiltersBar
@@ -33,6 +30,11 @@ export const Applications = () => {
           onStatusFilterChange={setStatusFiler}
           viewMode={viewMode}
           onViewModeChange={setViewMode}
+        />
+        <ApplicationsTable
+          applications={applications}
+          isLoading={isLoading}
+          isError={isError}
         />
       </Box>
     </>
