@@ -19,6 +19,7 @@ interface ApplicationsTableProps {
   applications: Application[];
   isLoading?: boolean;
   isError?: boolean;
+  onEditClick: (application: Application) => void;
 }
 
 const ROW_HEIGHT = 72;
@@ -43,6 +44,7 @@ export const ApplicationsTable = ({
   applications,
   isLoading,
   isError,
+  onEditClick,
 }: ApplicationsTableProps) => {
   if (isError) {
     return <Alert severity="error">Failed to load applications</Alert>;
@@ -85,6 +87,7 @@ export const ApplicationsTable = ({
             applications?.map((app) => (
               <TableRow
                 key={app.id}
+                onClick={() => onEditClick(app)}
                 sx={{
                   height: ROW_HEIGHT,
                   "&:last-child td": { borderBottom: 0 },

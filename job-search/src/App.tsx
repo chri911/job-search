@@ -1,10 +1,16 @@
 import { Outlet } from "react-router-dom";
-import { Box, Button } from "@mui/material";
+import { Box } from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { ContentContainer } from "./components/ContentContainer";
+import { useState, type ReactNode } from "react";
+
+export interface AppContextType {
+  setTopBarActions: (actions: ReactNode) => void;
+}
 
 function App() {
+  const [topBarActions, setTopBarActions] = useState<ReactNode>(null);
   return (
     <Box sx={{ display: "flex", height: "100vh", bgcolor: "#fff" }}>
       <Sidebar
@@ -22,15 +28,9 @@ function App() {
           overflow: "auto",
         }}
       >
-        <TopBar
-          actions={
-            <Button variant="contained" color="accent">
-              Add application
-            </Button>
-          }
-        />
+        <TopBar actions={topBarActions} />
         <ContentContainer>
-          <Outlet />
+          <Outlet context={{ setTopBarActions } satisfies AppContextType} />
         </ContentContainer>
       </Box>
     </Box>

@@ -86,6 +86,26 @@ app.get("/api/dashboard/stats", (req, res) => {
   });
 });
 
+app.post("/api/applications", (req, res) => {
+  const newApplication = {
+    id: String(Date.now()),
+    ...req.body,
+  };
+  applications.push(newApplication);
+  res.status(201).json(newApplication);
+});
+
+app.patch("/api/applications/:id", (req, res) => {
+  const { id } = req.params;
+  const application = applications.findIndex((a) => a.id === id);
+
+  if (!application) {
+    return res.status(404).json({ error: "Application not found" });
+  }
+  Object.assign(application, req.body);
+  res.json(application);
+  });
+
 const PORT = 5010;
 app.listen(PORT, () =>
   console.log(`Mock API running on http://localhost:${PORT}`),

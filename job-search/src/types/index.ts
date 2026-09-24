@@ -44,3 +44,13 @@ export interface DashboardStats {
 }
 
 export type ViewMode = "list" | "board";
+
+export interface ApplicationFormValues {
+  company: string;
+  position: string;
+  location: string;
+  workMode: "remote" | "hybrid" | "onsite";
+  status: ApplicationStatus;
+  appliedAt: string;
+  nextStep?: string;
+}
