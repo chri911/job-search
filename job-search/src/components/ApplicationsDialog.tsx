@@ -2,11 +2,21 @@ import { useEffect } from "react";
 import {
   useCreateApplication,
   useUpdateApplication,
+  useDeleteApplication,
 } from "../hooks/useApplicationsMutations";
 import type { ApplicationFormData } from "../schemas/applicationSchema";
 import type { Application } from "../types";
-import { Dialog, DialogContent, DialogTitle } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 import { ApplicationsForm } from "./ApplicationsForm";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
 
 interface ApplicationsDialogProps {
   open: boolean;
@@ -21,6 +31,7 @@ export const ApplicationsDialog = ({
 }: ApplicationsDialogProps) => {
   const createMutation = useCreateApplication();
   const updateMutation = useUpdateApplication();
+  const deleteMutation = useDeleteApplication();
 
   const isEditMode = Boolean(application);
   const mutation = isEditMode ? updateMutation : createMutation;
@@ -36,6 +47,19 @@ export const ApplicationsDialog = ({
     }
   };
 
+  const handleDelete = () => {
+    if (!application) {
+      return;
+    }
+    const confirmed = window.confirm(
+      `Delete application for ${application.company}? This cannot be undone.`,
+    );
+
+    if (confirmed) {
+      deleteMutation.mutate(application.id, { onSuccess: onClose });
+    }
+  };
+
   useEffect(() => {
     if (!open) {
       createMutation.reset();
@@ -48,6 +72,9 @@ export const ApplicationsDialog = ({
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <DialogTitle sx={{ fontWeight: 700 }}>
         {isEditMode ? "Edit application" : "Add application"}
+        <IconButton onClick={onClose} size="small">
+          <CloseIcon fontSize="small" />
+        </IconButton>
       </DialogTitle>
       <DialogContent>
         <ApplicationsForm
@@ -57,6 +84,18 @@ export const ApplicationsDialog = ({
           isSubmitting={mutation.isPending}
         />
       </DialogContent>
+      {isEditMode && (
+      <DialogActions sx={{ px: 3, pb: 2 }}>
+        <Button
+          color="error"
+          startIcon={<DeleteOutlineIcon />}
+          onClick={handleDelete}
+          disabled={deleteMutation.isPending}
+        >
+          {deleteMutation.isPending ? "Deleting..." : "Delete application"}
+        </Button>
+      </DialogActions>
+        )} 
     </Dialog>
   );
 };

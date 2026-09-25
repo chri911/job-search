@@ -97,14 +97,24 @@ app.post("/api/applications", (req, res) => {
 
 app.patch("/api/applications/:id", (req, res) => {
   const { id } = req.params;
-  const application = applications.findIndex((a) => a.id === id);
+  const application = applications.find((a) => a.id === id);
 
   if (!application) {
     return res.status(404).json({ error: "Application not found" });
   }
   Object.assign(application, req.body);
   res.json(application);
-  });
+});
+
+app.delete("/api/applications/:id", (req, res) => {
+  const index = applications.findIndex((a) => a.id === req.params.id);
+
+  if (index === -1) {
+    return res.status(404).json({ error: "Application not found" });
+  }
+  applications.splice(index, 1);
+  res.status(204).send();
+});
 
 const PORT = 5010;
 app.listen(PORT, () =>

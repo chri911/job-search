@@ -31,3 +31,7 @@ export const updateApplication = (
     body: JSON.stringify(data),
   });
 };
+
+export const deleteApplication = (id: string): Promise<void> => {
+  return apiClient<void>(`/api/applications/${id}`, { method: "DELETE" });
+};
