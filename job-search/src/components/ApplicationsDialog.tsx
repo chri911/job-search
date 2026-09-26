@@ -1,62 +1,68 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import {
   useCreateApplication,
   useUpdateApplication,
-  useDeleteApplication,
 } from "../hooks/useApplicationsMutations";
 import type { ApplicationFormData } from "../schemas/applicationSchema";
 import type { Application } from "../types";
-import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  IconButton,
-} from "@mui/material";
+import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { ApplicationsForm } from "./ApplicationsForm";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutlined";
+import { ApiError } from "../api/client";
 
 interface ApplicationsDialogProps {
   open: boolean;
   onClose: () => void;
   application?: Application;
+  onResult: (message: string, severity: "success" | "error") => void;
 }
 
 export const ApplicationsDialog = ({
   open,
   onClose,
   application,
+  onResult,
 }: ApplicationsDialogProps) => {
   const createMutation = useCreateApplication();
   const updateMutation = useUpdateApplication();
-  const deleteMutation = useDeleteApplication();
+
+  const [serverError, setServerError] = useState<string>();
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>();
 
   const isEditMode = Boolean(application);
   const mutation = isEditMode ? updateMutation : createMutation;
 
-  const handleSubmit = (data: ApplicationFormData) => {
-    if (isEditMode) {
-      updateMutation.mutate(
-        { id: application.id, data },
-        { onSuccess: onClose },
-      );
+  const handleApiError = (error: unknown) => {
+    if (error instanceof ApiError) {
+      setServerError(error.fields ? undefined : error.message);
+      setFieldErrors(error.fields);
     } else {
-      createMutation.mutate(data, { onSuccess: onClose });
+      setServerError("Something went wrong. Please try again.");
     }
   };
 
-  const handleDelete = () => {
-    if (!application) {
-      return;
-    }
-    const confirmed = window.confirm(
-      `Delete application for ${application.company}? This cannot be undone.`,
-    );
-
-    if (confirmed) {
-      deleteMutation.mutate(application.id, { onSuccess: onClose });
+  const handleSubmit = (data: ApplicationFormData) => {
+    setServerError(undefined);
+    setFieldErrors(undefined);
+    if (isEditMode) {
+      updateMutation.mutate(
+        { id: application.id, data },
+        {
+          onSuccess: () => {
+            onResult(`${data.company} updated`, "success");
+            onClose();
+          },
+          onError: handleApiError,
+        },
+      );
+    } else {
+      createMutation.mutate(data, {
+        onSuccess: () => {
+          onResult(`${data.company} added`, "success");
+          onClose();
+        },
+        onError: handleApiError,
+      });
     }
   };
 
@@ -76,26 +82,16 @@ export const ApplicationsDialog = ({
           <CloseIcon fontSize="small" />
         </IconButton>
       </DialogTitle>
-      <DialogContent>
+      <DialogContent dividers sx={{ maxHeight: "70vh", overflowY: "auto" }}>
         <ApplicationsForm
           key={application?.id ?? "new"}
           defaultValues={application}
           onSubmit={handleSubmit}
           isSubmitting={mutation.isPending}
+          serverError={serverError}
+          fieldErrors={fieldErrors}
         />
       </DialogContent>
-      {isEditMode && (
-      <DialogActions sx={{ px: 3, pb: 2 }}>
-        <Button
-          color="error"
-          startIcon={<DeleteOutlineIcon />}
-          onClick={handleDelete}
-          disabled={deleteMutation.isPending}
-        >
-          {deleteMutation.isPending ? "Deleting..." : "Delete application"}
-        </Button>
-      </DialogActions>
-        )} 
     </Dialog>
   );
 };

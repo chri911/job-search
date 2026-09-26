@@ -2,11 +2,13 @@ const API_BASE_URL = "http://localhost:5010";
 
 class ApiError extends Error {
   status: number;
+  fields?: Record<string, string>;
 
-  constructor(message: string, status: number) {
+  constructor(message: string, status: number, fields: Record<string, string>) {
     super(message);
     this.name = "ApiError";
     this.status = status;
+    this.fields = fields;
   }
 }
 async function apiClient<T>(
@@ -22,10 +24,18 @@ async function apiClient<T>(
   });
 
   if (!response.ok) {
-    throw new ApiError(
-      `Request failed: ${response.statusText}`,
-      response.status,
-    );
+    let message = response.statusText;
+    let fields: Record<string, string> | undefined;
+
+    try {
+      const body = await response.json();
+      if (body?.error) message = body.error;
+      if (body?.fields) fields = body.fields;
+    } catch {
+      // тело не JSON — оставляем message как statusText
+    }
+
+    throw new ApiError(message, response.status, fields);
   }
 
   if (response.status === 204) {

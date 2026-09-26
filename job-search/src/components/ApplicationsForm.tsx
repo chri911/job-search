@@ -4,12 +4,15 @@ import {
   type ApplicationFormData,
 } from "../schemas/applicationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Button, MenuItem, Stack, TextField } from "@mui/material";
+import { Alert, Button, MenuItem, Stack, TextField } from "@mui/material";
+import { useEffect } from "react";
 
 interface ApplicationFormProps {
   defaultValues?: Partial<ApplicationFormData>;
   onSubmit: (data: ApplicationFormData) => void;
   isSubmitting?: boolean;
+  serverError?: string;
+  fieldErrors?: Record<string, string>;
 }
 
 const workModeOptions = [
@@ -29,9 +32,12 @@ export const ApplicationsForm = ({
   defaultValues,
   onSubmit,
   isSubmitting,
+  serverError,
+  fieldErrors,
 }: ApplicationFormProps) => {
   const {
     handleSubmit,
+    setError,
     control,
     formState: { errors },
   } = useForm<ApplicationFormData>({
@@ -48,9 +54,21 @@ export const ApplicationsForm = ({
     },
   });
 
+  useEffect(() => {
+    if (fieldErrors) {
+      Object.entries(fieldErrors).forEach(([field, message]) => {
+        setError(field as keyof ApplicationFormData, {
+          type: "server",
+          message,
+        });
+      });
+    }
+  }, [fieldErrors, setError]);
+
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2.5}>
+        {serverError && <Alert severity="error">{serverError}</Alert>}
         <Controller
           name="company"
           control={control}

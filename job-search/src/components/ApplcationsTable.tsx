@@ -14,18 +14,19 @@ import {
 import type { Application } from "../types";
 import { StatusChip } from "./StatusChip";
 import { CompanyAvatar } from "./CompanyAvatar";
+import { RowActionsMenu } from "./RowActionsMenu";
 
 interface ApplicationsTableProps {
   applications: Application[];
   isLoading?: boolean;
   isError?: boolean;
   onEditClick: (application: Application) => void;
+  onDeleteClick: (application: Application) => void;
 }
 
 const ROW_HEIGHT = 72;
 
 function formatDate(dateString: string): string {
-  console.log(dateString);
   const date = new Date(dateString);
   return date.toLocaleDateString("en-GB", {
     day: "numeric",
@@ -45,6 +46,7 @@ export const ApplicationsTable = ({
   isLoading,
   isError,
   onEditClick,
+  onDeleteClick,
 }: ApplicationsTableProps) => {
   if (isError) {
     return <Alert severity="error">Failed to load applications</Alert>;
@@ -58,6 +60,7 @@ export const ApplicationsTable = ({
     >
       <Table>
         <TableHead>
+          <TableCell />
           <TableRow
             sx={{
               "& th": {
@@ -126,6 +129,12 @@ export const ApplicationsTable = ({
                     {app.nextStep ?? "—"}
                     {app.nextStepDate && ` · ${formatDate(app.nextStepDate)}`}
                   </Typography>
+                </TableCell>
+                <TableCell align="right">
+                  <RowActionsMenu
+                    onEdit={() => onEditClick(app)}
+                    onDelete={() => onDeleteClick(app)}
+                  />
                 </TableCell>
               </TableRow>
             ))}

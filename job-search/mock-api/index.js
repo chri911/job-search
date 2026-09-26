@@ -6,6 +6,25 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+const REQUIRED_FIELDS = [
+  "company",
+  "position",
+  "location",
+  "workMode",
+  "status",
+  "appliedAt",
+];
+
+const validateApplication = (data) => {
+  const fields = {};
+  for (const field of REQUIRED_FIELDS) {
+    if (!data[field]) {
+      fields[field] = `${field} is required`;
+    }
+  }
+  return fields;
+};
+
 app.get("/api/health", (req, res) => {
   res.json({ status: "ok" });
 });
@@ -87,6 +106,11 @@ app.get("/api/dashboard/stats", (req, res) => {
 });
 
 app.post("/api/applications", (req, res) => {
+  const fields = validateApplication(req.body);
+  if (Object.keys(fields).length > 0) {
+    return res.status(400).json({ error: "Validation failed", fields });
+  }
+
   const newApplication = {
     id: String(Date.now()),
     ...req.body,
@@ -102,6 +126,12 @@ app.patch("/api/applications/:id", (req, res) => {
   if (!application) {
     return res.status(404).json({ error: "Application not found" });
   }
+  const merged = { ...application, ...req.body };
+  const fields = validateApplication(merged);
+  if (Object.keys(fields).length > 0) {
+    return res.status(400).json({ error: "Validation failed", fields });
+  }
+
   Object.assign(application, req.body);
   res.json(application);
 });
