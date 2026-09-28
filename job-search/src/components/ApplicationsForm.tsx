@@ -6,6 +6,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, MenuItem, Stack, TextField } from "@mui/material";
 import { useEffect } from "react";
+import { FormTextField } from "./FormTextField";
 
 interface ApplicationFormProps {
   defaultValues?: Partial<ApplicationFormData>;
@@ -69,44 +70,23 @@ export const ApplicationsForm = ({
     <form onSubmit={handleSubmit(onSubmit)}>
       <Stack spacing={2.5}>
         {serverError && <Alert severity="error">{serverError}</Alert>}
-        <Controller
+        <FormTextField
           name="company"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Company"
-              fullWidth
-              error={!!errors.company}
-              helperText={errors.company?.message}
-            />
-          )}
+          label="Company"
+          errorMessage={errors.company?.message}
         />
-        <Controller
+        <FormTextField
           name="position"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Position"
-              fullWidth
-              error={!!errors.position}
-              helperText={errors.position?.message}
-            />
-          )}
+          label="Position"
+          errorMessage={errors.position?.message}
         />
-        <Controller
+        <FormTextField
           name="location"
           control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Location"
-              fullWidth
-              error={!!errors.location}
-              helperText={errors.location?.message}
-            />
-          )}
+          label="Location"
+          errorMessage={errors.location?.message}
         />
         <Controller
           name="workMode"

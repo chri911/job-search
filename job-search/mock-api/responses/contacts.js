@@ -1,0 +1,46 @@
+export const contacts = [
+  {
+    id: "c1",
+    applicationId: "1",
+    name: "Marta Kowalczyk",
+    role: "Recruiter",
+    email: "martakowal@gmail.com",
+    linkedinUrl: "https://linkedin.com/in/martakowalczyk",
+  },
+  {
+    id: "c2",
+    applicationId: "1",
+    name: "Piotr Nowak",
+    role: "Engineering Manager",
+    email: "nowak@yahoo.com",
+  },
+  {
+    id: "c3",
+    applicationId: "2",
+    name: "Anna Wiśniewska",
+    role: "Talent Acquisition",
+    email: "anna1965@gmail.com",
+  },
+  {
+    id: "c4",
+    applicationId: "3",
+    name: "Jakub Zieliński",
+    role: "CTO",
+    email: "jakub.zielinski@gmail.com",
+    linkedinUrl: "https://linkedin.com/in/jakubzielinski",
+  },
+  {
+    id: "c5",
+    applicationId: "6",
+    name: "Ewa Dąbrowska",
+    role: "Recruiter",
+    email: "dabrowska@yahoo.com",
+  },
+  {
+    id: "c6",
+    applicationId: "9",
+    name: "Tomasz Lewandowski",
+    role: "Frontend Lead",
+    email: "lewandowski.t@gmail.com",
+  },
+];

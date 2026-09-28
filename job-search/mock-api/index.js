@@ -1,6 +1,8 @@
 import express from "express";
 import cors from "cors";
 import { applications } from "./responses/applications.js";
+import { contacts } from "./responses/contacts.js";
+import { interviews } from "./responses/interviews.js";
 
 const app = express();
 app.use(cors());
@@ -144,6 +146,101 @@ app.delete("/api/applications/:id", (req, res) => {
   }
   applications.splice(index, 1);
   res.status(204).send();
+});
+
+const findApplicationOr404 = (req, res) => {
+  const application = applications.find((a) => a.id === req.params.id);
+  if (!application) {
+    res.status(404).json({ error: "Application not found" });
+    return null;
+  }
+  return application;
+};
+
+app.get("/api/applications/:id/contacts", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+  const result = contacts.filter((c) => c.applicationId === req.params.id);
+  res.json(result);
+});
+
+app.post("/api/applications/:id/contacts", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+
+  if (!req.body.name || !req.body.role) {
+    return res.status(400).json({
+      error: "Validation failed",
+      fields: {
+        ...(!req.body.name && { name: "name is required" }),
+        ...(!req.body.role && { role: "role is required" }),
+      },
+    });
+  }
+
+  const newContact = {
+    id: `c${Date.now()}`,
+    applicationId: req.params.id,
+    ...req.body,
+  };
+  contacts.push(newContact);
+  res.status(201).json(newContact);
+});
+
+app.patch("/api/applications/:id/contacts/:contactId", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+
+  const contact = contacts.find(
+    (c) => c.id === req.params.contactId && c.applicationId === req.params.id,
+  );
+  if (!contact) {
+    return res.status(404).json({ error: "Contact not found" });
+  }
+
+  Object.assign(contact, req.body);
+  res.json(contact);
+});
+
+app.get("/api/applications/:id/interviews", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+  const result = interviews.filter((i) => i.applicationId === req.params.id);
+  res.json(result);
+});
+
+app.post("/api/applications/:id/interviews", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+
+  if (!req.body.type || !req.body.scheduledAt) {
+    return res.status(400).json({
+      error: "Validation failed",
+      fields: {
+        ...(!req.body.type && { type: "type is required" }),
+        ...(!req.body.scheduledAt && {
+          scheduledAt: "scheduledAt is required",
+        }),
+      },
+    });
+  }
+
+  const newInterview = {
+    id: `i${Date.now()}`,
+    applicationId: req.params.id,
+    ...req.body,
+  };
+  interviews.push(newInterview);
+  res.status(201).json(newInterview);
+});
+
+app.patch("/api/applications/:id/interviews/:interviewId", (req, res) => {
+  if (!findApplicationOr404(req, res)) return;
+
+  const interview = interviews.find(
+    (i) => i.id === req.params.interviewId && i.applicationId === req.params.id,
+  );
+  if (!interview) {
+    return res.status(404).json({ error: "Interview not found" });
+  }
+
+  Object.assign(interview, req.body);
+  res.json(interview);
 });
 
 const PORT = 5010;
