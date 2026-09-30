@@ -4,6 +4,8 @@ export const interviews = [
     applicationId: "1",
     type: "phone",
     scheduledAt: "2026-09-10T10:00:00",
+    status: "completed",
+    interviewerName: "Marta Kowalczyk",
     notes: "Initial screening call with recruiter",
   },
   {
@@ -11,6 +13,8 @@ export const interviews = [
     applicationId: "1",
     type: "technical",
     scheduledAt: "2026-09-12T14:00:00",
+    status: "scheduled",
+    interviewerName: "Piotr Nowak",
     notes: "Live coding session, React + TypeScript",
   },
   {
@@ -18,6 +22,8 @@ export const interviews = [
     applicationId: "6",
     type: "phone",
     scheduledAt: "2026-09-08T11:00:00",
+    status: "completed",
+    interviewerName: "Ewa Dąbrowska",
     notes: "HR intro call",
   },
   {
@@ -25,6 +31,8 @@ export const interviews = [
     applicationId: "9",
     type: "technical",
     scheduledAt: "2026-09-14T15:00:00",
+    status: "scheduled",
+    interviewerName: "Tomasz Lewandowski",
     notes: "System design + coding round",
   },
   {
@@ -32,6 +40,7 @@ export const interviews = [
     applicationId: "9",
     type: "final",
     scheduledAt: "2026-09-16T13:00:00",
+    status: "scheduled",
     notes: "Final round with team leads",
   },
   {
@@ -39,5 +48,6 @@ export const interviews = [
     applicationId: "12",
     type: "technical",
     scheduledAt: "2026-09-17T10:00:00",
+    status: "scheduled",
   },
 ];

@@ -3,13 +3,19 @@ import {
   Typography,
   List,
   ListItem,
-  Chip,
   Skeleton,
   Alert,
   Stack,
+  IconButton,
+  Button,
 } from "@mui/material";
 import type { Interview } from "../../types";
 import { useApplicationInterviews } from "../../hooks/useApplicationInterview";
+import { useState } from "react";
+import { InterviewDialog } from "./InterviewDialog";
+import { InterviewStatusChip } from "./InterviewStatusChip";
+import AddIcon from "@mui/icons-material/Add";
+import EditIcon from "@mui/icons-material/Edit";
 
 interface InterviewsTabProps {
   applicationId: string;
@@ -37,61 +43,90 @@ export const InterviewsTab = ({ applicationId }: InterviewsTabProps) => {
     isLoading,
     isError,
   } = useApplicationInterviews(applicationId);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingInterview, setEditingInterview] = useState<
+    Interview | undefined
+  >();
 
-  if (isError) {
-    return (
-      <Box sx={{ pt: 3 }}>
-        <Alert severity="error">Failed to load interviews</Alert>
+  const handleAddClick = () => {
+    setEditingInterview(undefined);
+    setDialogOpen(true);
+  };
+
+  const handleEditClick = (interview: Interview) => {
+    setEditingInterview(interview);
+    setDialogOpen(true);
+  };
+
+  return (
+    <Box sx={{ pt: 3 }}>
+      <Box sx={{ display: "flex", justifyContent: "flex-end", mb: 1 }}>
+        <Button
+          startIcon={<AddIcon fontSize="small" />}
+          onClick={handleAddClick}
+          sx={{ textTransform: "none" }}
+        >
+          Add interview
+        </Button>
       </Box>
-    );
-  }
 
-  if (isLoading) {
-    return (
-      <Box sx={{ pt: 3 }}>
-        {Array.from({ length: 2 }).map((_, i) => (
+      {isError && <Alert severity="error">Failed to load interviews</Alert>}
+
+      {isLoading &&
+        Array.from({ length: 2 }).map((_, i) => (
           <Skeleton key={i} variant="text" height={60} />
         ))}
-      </Box>
-    );
-  }
 
-  if (interviews?.length === 0) {
-    return (
-      <Box sx={{ pt: 3 }}>
+      {!isLoading && !isError && interviews?.length === 0 && (
         <Typography sx={{ color: "text.secondary" }}>
           No interviews scheduled yet
         </Typography>
-      </Box>
-    );
-  }
+      )}
 
-  return (
-    <List sx={{ pt: 3 }}>
-      {interviews?.map((interview) => (
-        <ListItem key={interview.id} sx={{ px: 0 }}>
-          <Stack
-            spacing={2}
-            sx={{ width: "100%", direction: "row", alignItems: "center" }}
-          >
-            <Chip
-              size="small"
-              label={typeLabels[interview.type]}
-              sx={{ bgcolor: "interview.light" }}
-            />
-            <Box sx={{ flex: 1 }}>
-              <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                {formatDateTime(interview.scheduledAt)}
-              </Typography>
-              {interview.notes && (
-                <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
-                  {interview.notes}
+      {!isLoading && !isError && (
+        <List>
+          {interviews?.map((interview) => (
+            <ListItem key={interview.id} sx={{ px: 0 }}>
+              <Stack
+                spacing={2}
+                sx={{ width: "100%", direction: "row", alignItems: "center" }}
+              >
+                <Box sx={{ minWidth: 110 }}>
+                  <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
+                    {typeLabels[interview.type]}
+                  </Typography>
+                  <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
+                    {formatDateTime(interview.scheduledAt)}
+                  </Typography>
+                </Box>
+
+                <Typography
+                  sx={{ fontSize: 13, color: "text.secondary", flex: 1 }}
+                >
+                  {interview.interviewerName ?? "—"}
                 </Typography>
-              )}
-            </Box>
-          </Stack>
-        </ListItem>
-      ))}
-    </List>
+
+                <InterviewStatusChip status={interview.status} />
+
+                <IconButton
+                  size="small"
+                  onClick={() => handleEditClick(interview)}
+                  aria-label="Edit interview"
+                >
+                  <EditIcon fontSize="small" />
+                </IconButton>
+              </Stack>
+            </ListItem>
+          ))}
+        </List>
+      )}
+
+      <InterviewDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        applicationId={applicationId}
+        interview={editingInterview}
+      />
+    </Box>
   );
 };

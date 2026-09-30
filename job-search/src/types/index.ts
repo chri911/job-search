@@ -62,3 +62,31 @@ export interface ContactFormValues {
   phone?: string;
   linkedinUrl?: string;
 }
+
+export type InterviewStatus = "scheduled" | "completed" | "cancelled";
+
+export interface Interview {
+  id: string;
+  applicationId: string;
+  type: "phone" | "technical" | "onsite" | "final";
+  scheduledAt: string;
+  status: InterviewStatus;
+  interviewerName?: string;
+  notes?: string;
+}
+
+export interface InterviewFormValues {
+  type: Interview["type"];
+  scheduledAt: string;
+  status: InterviewStatus;
+  interviewerName?: string;
+  notes?: string;
+}
+
+export interface TimelineEvent {
+  id: string;
+  date: string;
+  title: string;
+  description?: string;
+  icon: "created" | "status" | "interview";
+}

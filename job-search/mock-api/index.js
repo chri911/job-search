@@ -231,6 +231,7 @@ app.post("/api/applications/:id/interviews", (req, res) => {
   const newInterview = {
     id: `i${Date.now()}`,
     applicationId: req.params.id,
+    status: "scheduled",
     ...req.body,
   };
   interviews.push(newInterview);

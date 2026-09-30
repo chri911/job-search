@@ -6,6 +6,7 @@ import type {
   ContactFormValues,
   DashboardStats,
   Interview,
+  InterviewFormValues,
 } from "../types";
 
 export const fetchApplications = (): Promise<Application[]> => {
@@ -57,21 +58,21 @@ export const deleteApplication = (id: string): Promise<void> => {
   return apiClient<void>(`/api/applications/${id}`, { method: "DELETE" });
 };
 
-export function createContact(
+export const createContact = (
   applicationId: string,
   data: ContactFormValues,
-): Promise<Contact> {
+): Promise<Contact> => {
   return apiClient<Contact>(`/api/applications/${applicationId}/contacts`, {
     method: "POST",
     body: JSON.stringify(data),
   });
-}
+};
 
-export function updateContact(
+export const updateContact = (
   applicationId: string,
   contactId: string,
   data: Partial<ContactFormValues>,
-): Promise<Contact> {
+): Promise<Contact> => {
   return apiClient<Contact>(
     `/api/applications/${applicationId}/contacts/${contactId}`,
     {
@@ -79,4 +80,25 @@ export function updateContact(
       body: JSON.stringify(data),
     },
   );
-}
+};
+
+export const createInterview = (
+  applicationId: string,
+  data: InterviewFormValues,
+): Promise<Interview> => {
+  return apiClient<Interview>(`/api/applications/${applicationId}/interviews`, {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
+};
+
+export const updateInterview = (
+  applicationId: string,
+  interviewId: string,
+  data: Partial<InterviewFormValues>,
+): Promise<Interview> => {
+  return apiClient<Interview>(
+    `/api/applications/${applicationId}/interviews/${interviewId}`,
+    { method: "PATCH", body: JSON.stringify(data) },
+  );
+};
