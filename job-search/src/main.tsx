@@ -12,6 +12,7 @@ import { Pipeline } from "./pages/Pipeline.tsx";
 import { Interviews } from "./pages/Interviews.tsx";
 import { NotFound } from "./pages/NotFound.tsx";
 import { queryClient } from "./lib/queryClient.ts";
+import { ApplicationDetails } from "./pages/ApplicationDetails.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
@@ -23,6 +24,10 @@ createRoot(document.getElementById("root")!).render(
               <Route path="/" element={<App />}>
                 <Route index element={<Overview />} />
                 <Route path="applications" element={<Applications />} />
+                <Route
+                  path="applications/:id"
+                  element={<ApplicationDetails />}
+                />
                 <Route path="pipeline" element={<Pipeline />} />
                 <Route path="interviews" element={<Interviews />} />
                 <Route path="*" element={<NotFound />} />

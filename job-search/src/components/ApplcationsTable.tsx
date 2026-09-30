@@ -15,6 +15,7 @@ import type { Application } from "../types";
 import { StatusChip } from "./StatusChip";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { RowActionsMenu } from "./RowActionsMenu";
+import { useNavigate } from "react-router-dom";
 
 interface ApplicationsTableProps {
   applications: Application[];
@@ -48,6 +49,8 @@ export const ApplicationsTable = ({
   onEditClick,
   onDeleteClick,
 }: ApplicationsTableProps) => {
+  const navigate = useNavigate();
+
   if (isError) {
     return <Alert severity="error">Failed to load applications</Alert>;
   }
@@ -90,11 +93,13 @@ export const ApplicationsTable = ({
             applications?.map((app) => (
               <TableRow
                 key={app.id}
-                onClick={() => onEditClick(app)}
+                onClick={() => navigate(`/applications/${app.id}`)}
                 sx={{
-                  height: ROW_HEIGHT,
+                  cursor: "pointer",
+                  "&:hover": { bgcolor: "action.hover" },
                   "&:last-child td": { borderBottom: 0 },
                   "& td": { borderColor: "divider" },
+                  height: ROW_HEIGHT,
                 }}
               >
                 <TableCell>

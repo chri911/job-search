@@ -157,6 +157,14 @@ const findApplicationOr404 = (req, res) => {
   return application;
 };
 
+app.get("/api/applications/:id", (req, res) => {
+  const application = applications.find((a) => a.id === req.params.id);
+  if (!application) {
+    return res.status(404).json({ error: "Application not found" });
+  }
+  res.json(application);
+});
+
 app.get("/api/applications/:id/contacts", (req, res) => {
   if (!findApplicationOr404(req, res)) return;
   const result = contacts.filter((c) => c.applicationId === req.params.id);

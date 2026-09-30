@@ -54,3 +54,11 @@ export interface ApplicationFormValues {
   appliedAt: string;
   nextStep?: string;
 }
+
+export interface ContactFormValues {
+  name: string;
+  role: string;
+  email?: string;
+  phone?: string;
+  linkedinUrl?: string;
+}
