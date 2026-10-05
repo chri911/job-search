@@ -1,10 +1,14 @@
 import { useQuery } from "@tanstack/react-query";
-import { fetchApplicationById, fetchApplications } from "../api/applications";
+import {
+  fetchApplicationById,
+  fetchApplications,
+  type FetchApplicationsParams,
+} from "../api/applications";
 
-export const useApplications = () => {
+export const useApplications = (params?: FetchApplicationsParams) => {
   return useQuery({
-    queryKey: ["applications"],
-    queryFn: fetchApplications,
+    queryKey: ["applications", params ?? {}],
+    queryFn: () => fetchApplications(params),
   });
 };
 

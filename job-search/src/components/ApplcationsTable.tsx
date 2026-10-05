@@ -10,6 +10,8 @@ import {
   Typography,
   Alert,
   Skeleton,
+  TablePagination,
+  TableSortLabel,
 } from "@mui/material";
 import type { Application } from "../types";
 import { StatusChip } from "./StatusChip";
@@ -21,31 +23,54 @@ interface ApplicationsTableProps {
   applications: Application[];
   isLoading?: boolean;
   isError?: boolean;
+  total: number;
+  page: number;
+  limit: number;
+  sortField: string;
+  sortDirection: "asc" | "desc";
   onEditClick: (application: Application) => void;
   onDeleteClick: (application: Application) => void;
+  onPageChange: (page: number) => void;
+  onRowsPerPageChange: (limit: number) => void;
+  onSortChange: (field: string) => void;
 }
 
 const ROW_HEIGHT = 72;
 
-function formatDate(dateString: string): string {
+const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
   return date.toLocaleDateString("en-GB", {
     day: "numeric",
     month: "short",
     year: "numeric",
   });
-}
+};
 
-function locationLabel(app: Application): string {
+const locationLabel = (app: Application): string => {
   const modeLabel =
     app.workMode.charAt(0).toUpperCase() + app.workMode.slice(1);
   return `${modeLabel} · ${app.location}`;
-}
+};
+
+const sortableColumns: { field: string; label: string }[] = [
+  { field: "company", label: "Company" },
+  { field: "position", label: "Position" },
+  { field: "status", label: "Status" },
+  { field: "appliedAt", label: "Applied" },
+];
 
 export const ApplicationsTable = ({
   applications,
   isLoading,
   isError,
+  total,
+  page,
+  limit,
+  sortField,
+  sortDirection,
+  onPageChange,
+  onRowsPerPageChange,
+  onSortChange,
   onEditClick,
   onDeleteClick,
 }: ApplicationsTableProps) => {
@@ -63,7 +88,6 @@ export const ApplicationsTable = ({
     >
       <Table>
         <TableHead>
-          <TableCell />
           <TableRow
             sx={{
               "& th": {
@@ -73,11 +97,19 @@ export const ApplicationsTable = ({
               },
             }}
           >
-            <TableCell>Company</TableCell>
-            <TableCell>Position</TableCell>
-            <TableCell>Status</TableCell>
-            <TableCell>Applied</TableCell>
+            {sortableColumns.map((col) => (
+              <TableCell key={col.field}>
+                <TableSortLabel
+                  active={sortField === col.field}
+                  direction={sortField === col.field ? sortDirection : "asc"}
+                  onClick={() => onSortChange(col.field)}
+                >
+                  {col.label}
+                </TableSortLabel>
+              </TableCell>
+            ))}
             <TableCell>Next step</TableCell>
+            <TableCell />
           </TableRow>
         </TableHead>
         <TableBody>
@@ -156,6 +188,17 @@ export const ApplicationsTable = ({
           )}
         </TableBody>
       </Table>
+      <TablePagination
+        component="div"
+        count={total}
+        page={page - 1}
+        onPageChange={(_, newPage) => onPageChange(newPage)}
+        rowsPerPage={limit}
+        onRowsPerPageChange={(e) =>
+          onRowsPerPageChange(parseInt(e.target.value, 10))
+        }
+        rowsPerPageOptions={[5, 10, 25, 50]}
+      />
     </TableContainer>
   );
 };

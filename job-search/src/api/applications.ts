@@ -2,15 +2,37 @@ import { apiClient } from "./client";
 import type {
   Application,
   ApplicationFormValues,
+  ApplicationStatus,
   Contact,
   ContactFormValues,
   DashboardStats,
   Interview,
   InterviewFormValues,
+  PaginatedResponse,
 } from "../types";
+export interface FetchApplicationsParams {
+  search?: string;
+  status?: ApplicationStatus | "all";
+  sort?: string;
+  page?: number;
+  limit?: number;
+}
 
-export const fetchApplications = (): Promise<Application[]> => {
-  return apiClient<Application[]>("/api/applications");
+export const fetchApplications = (
+  params?: FetchApplicationsParams,
+): Promise<PaginatedResponse<Application>> => {
+  const searchParams = new URLSearchParams();
+  if (params?.search) searchParams.set("search", params.search);
+  if (params?.status && params.status !== "all")
+    searchParams.set("status", params.status);
+  if (params?.sort) searchParams.set("sort", params.sort);
+  if (params?.page) searchParams.set("page", String(params.page));
+  if (params?.limit) searchParams.set("limit", String(params.limit));
+
+  const query = searchParams.toString();
+  return apiClient<PaginatedResponse<Application>>(
+    `/api/applications${query ? `?${query}` : ""}`,
+  );
 };
 
 export const fetchApplicationById = (id: string): Promise<Application> => {

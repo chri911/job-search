@@ -32,7 +32,42 @@ app.get("/api/health", (req, res) => {
 });
 
 app.get("/api/applications", (req, res) => {
-  res.json(applications);
+  let result = [...applications];
+
+  const search = req.query.search;
+  if (search) {
+    const searchLower = String(search).toLowerCase();
+    result = result.filter(
+      (a) =>
+        a.company.toLowerCase().includes(searchLower) ||
+        a.position.toLowerCase().includes(searchLower),
+    );
+  }
+
+  const status = req.query.status;
+  if (status && status !== "all") {
+    result = result.filter((a) => a.status === status);
+  }
+
+  const sort = req.query.sort;
+  if (sort) {
+    const [field, direction] = String(sort).split(":");
+    const dir = direction === "desc" ? -1 : 1;
+    result = result.sort((a, b) => {
+      if (a[field] < b[field]) return -1 * dir;
+      if (a[field] > b[field]) return 1 * dir;
+      return 0;
+    });
+  }
+
+  const total = result.length;
+
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || total || 1;
+  const start = (page - 1) * limit;
+  const items = result.slice(start, start + limit);
+
+  res.json({ items, total });
 });
 
 app.get("/api/dashboard/stats", (req, res) => {

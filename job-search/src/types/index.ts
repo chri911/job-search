@@ -32,6 +32,11 @@ export interface Application {
   interviews: Interview[];
 }
 
+export interface PaginatedResponse<T> {
+  items: T[];
+  total: number;
+}
+
 export interface DashboardStats {
   active: number;
   interviews: number;
