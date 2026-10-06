@@ -12,6 +12,7 @@ import type { AppContextType } from "../App";
 import { useDeleteApplication } from "../hooks/useApplicationsMutations";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
+import { PipelineBoard } from "../components/PipeLineBoard";
 
 export const Applications = () => {
   const { setTopBarActions } = useOutletContext<AppContextType>();
@@ -38,6 +39,15 @@ export const Applications = () => {
     sort: `${sortField}:${sortDirection}`,
     page,
     limit,
+  });
+  const {
+    data: boardData,
+    isLoading: isBoardLoading,
+    isError: isBoardError,
+  } = useApplications({
+    search: debouncedSearch || undefined,
+    status: "all",
+    limit: 1000,
   });
   const applications = data?.items;
   const total = data?.total || 0;
@@ -186,21 +196,29 @@ export const Applications = () => {
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
         />
-        <ApplicationsTable
-          applications={applications}
-          isLoading={isLoading}
-          isError={isError}
-          total={total}
-          page={page}
-          limit={limit}
-          sortField={sortField}
-          sortDirection={sortDirection}
-          onEditClick={handleEditClick}
-          onDeleteClick={handleDeleteClick}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
-          onSortChange={handleSortChange}
-        />
+        {viewMode === "list" ? (
+          <ApplicationsTable
+            applications={applications}
+            isLoading={isLoading}
+            isError={isError}
+            total={total}
+            page={page}
+            limit={limit}
+            sortField={sortField}
+            sortDirection={sortDirection}
+            onEditClick={handleEditClick}
+            onDeleteClick={handleDeleteClick}
+            onPageChange={handlePageChange}
+            onRowsPerPageChange={handleRowsPerPageChange}
+            onSortChange={handleSortChange}
+          />
+        ) : (
+          <PipelineBoard
+            applications={boardData?.items}
+            isLoading={isBoardLoading}
+            isError={isBoardError}
+          />
+        )}
         <ApplicationsDialog
           open={dialogOpen}
           onClose={handleDialogClose}
