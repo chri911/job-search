@@ -32,7 +32,7 @@ async function apiClient<T>(
       if (body?.error) message = body.error;
       if (body?.fields) fields = body.fields;
     } catch {
-      // тело не JSON — оставляем message как statusText
+      // message as statusText
     }
 
     throw new ApiError(message, response.status, fields);

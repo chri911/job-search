@@ -13,7 +13,7 @@ export interface Interview {
   id: string;
   applicationId: string;
   type: "phone" | "onsite" | "technical" | "final";
-  scheduledAt: string; // ISO date string
+  scheduledAt: string;
   notes?: string;
   interviewer?: Contact;
 }
@@ -26,8 +26,8 @@ export interface Application {
   workMode: "remote" | "onsite" | "hybrid";
   status: ApplicationStatus;
   nextStep: string;
-  nextStepDate: string; // ISO date string
-  appliedAt: string; // ISO date string
+  nextStepDate: string;
+  appliedAt: string;
   contacts: Contact[];
   interviews: Interview[];
 }

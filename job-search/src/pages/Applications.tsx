@@ -12,7 +12,7 @@ import type { AppContextType } from "../App";
 import { useDeleteApplication } from "../hooks/useApplicationsMutations";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
-import { PipelineBoard } from "../components/PipeLineBoard";
+import { PipelineBoard } from "../components/PipelineBoard";
 
 export const Applications = () => {
   const { setTopBarActions } = useOutletContext<AppContextType>();
@@ -217,6 +217,9 @@ export const Applications = () => {
             applications={boardData?.items}
             isLoading={isBoardLoading}
             isError={isBoardError}
+            onStatusChangeResult={(message, severity) =>
+              setSnackbar({ message, severity })
+            }
           />
         )}
         <ApplicationsDialog
