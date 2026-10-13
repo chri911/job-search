@@ -7,6 +7,7 @@ import {
   List,
   ListItemButton,
   ListItemText,
+  Drawer,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 
@@ -21,27 +22,31 @@ interface SidebarProps {
     email: string;
     initials: string;
   };
+  mobileOpen: boolean;
+  onMobileClose: () => void;
 }
 
-export const Sidebar = ({ user }: SidebarProps) => {
+export const Sidebar = ({ user, mobileOpen, onMobileClose }: SidebarProps) => {
   const navItems: NavItem[] = [
     { label: "Overview", path: "/" },
     { label: "Applications", path: "/applications" },
     { label: "Pipeline", path: "/pipeline" },
     { label: "Interviews", path: "/interviews" },
   ];
-  return (
+  const content = (
     <Box
       sx={{
         width: 320,
+        maxWidth: "85vw",
+        height: "100%",
         bgcolor: "primary.main",
-        color: "#fff",
+        color: "primary.contrastText",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         py: 3,
         px: 2,
-        borderRadius: "12px 0 0 12px",
+        borderRadius: { xs: 0, lg: "16px 0 0 16px" },
       }}
     >
       <Stack
@@ -86,6 +91,7 @@ export const Sidebar = ({ user }: SidebarProps) => {
                   bgcolor: "rgba(255,255,255,0.06)",
                 },
               }}
+              onClick={onMobileClose}
             >
               <ListItemText
                 primary={item.label}
@@ -120,5 +126,21 @@ export const Sidebar = ({ user }: SidebarProps) => {
         </Box>
       </Stack>
     </Box>
+  );
+
+  return (
+    <>
+      <Box sx={{ display: { xs: "none", lg: "block" }, height: "100%" }}>
+        {content}
+      </Box>
+      <Drawer
+        variant="temporary"
+        open={mobileOpen}
+        onClose={onMobileClose}
+        sx={{ display: { xs: "block", lg: "none" } }}
+      >
+        {content}
+      </Drawer>
+    </>
   );
 };

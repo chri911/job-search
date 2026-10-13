@@ -287,6 +287,35 @@ app.patch("/api/applications/:id/interviews/:interviewId", (req, res) => {
   res.json(interview);
 });
 
+app.get("/api/interviews", (req, res) => {
+  let result = interviews.map((interview) => {
+    const application = applications.find(
+      (a) => a.id === interview.applicationId,
+    );
+    return {
+      ...interview,
+      company: application?.company ?? "Unknown",
+      position: application?.position ?? "",
+    };
+  });
+
+  if (req.query.upcoming === "true") {
+    const now = new Date();
+    result = result.filter(
+      (i) => i.status === "scheduled" && new Date(i.scheduledAt) >= now,
+    );
+  }
+
+  result.sort((a, b) => new Date(a.scheduledAt) - new Date(b.scheduledAt));
+
+  const limit = parseInt(req.query.limit);
+  if (limit) {
+    result = result.slice(0, limit);
+  }
+
+  res.json(result);
+});
+
 const PORT = 5010;
 app.listen(PORT, () =>
   console.log(`Mock API running on http://localhost:${PORT}`),

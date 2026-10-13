@@ -49,7 +49,7 @@ export const FiltersBar = ({
           label="Search"
           value={searchValue}
           onChange={(e) => onSearchChange(e.target.value)}
-          sx={{ width: 220 }}
+          sx={{ width: { xs: "100%", sm: 220 } }}
           slotProps={{
             input: {
               startAdornment: (

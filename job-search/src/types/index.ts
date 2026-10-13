@@ -18,6 +18,11 @@ export interface Interview {
   interviewer?: Contact;
 }
 
+export interface InterviewWithApplication extends Interview {
+  company: string;
+  position: string;
+}
+
 export interface Application {
   id: string;
   company: string;

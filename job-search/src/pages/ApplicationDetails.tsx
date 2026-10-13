@@ -94,6 +94,8 @@ export const ApplicationDetails = () => {
       <Tabs
         value={activeTab}
         onChange={(_, newValue) => setActiveTab(newValue)}
+        variant="scrollable"
+        scrollButtons="auto"
         sx={{ borderBottom: "1px solid", borderColor: "divider" }}
       >
         <Tab label="Details" value="details" sx={{ textTransform: "none" }} />

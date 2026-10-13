@@ -9,6 +9,7 @@ import { ApiError } from "../../api/client";
 import type { Contact } from "../../types";
 import type { ContactFormData } from "../../schemas/contactSchema";
 import { ContactForm } from "./ContactForm";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 interface ContactDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export default function ContactDialog({
   applicationId,
   contact,
 }: ContactDialogProps) {
+  const isMobile = useIsMobile();
   const createMutation = useCreateContact(applicationId);
   const updateMutation = useUpdateContact(applicationId);
   const [serverError, setServerError] = useState<string>();
@@ -60,7 +62,13 @@ export default function ContactDialog({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <DialogTitle
         sx={{
           fontWeight: 700,

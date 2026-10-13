@@ -9,6 +9,7 @@ import {
 } from "../../hooks/useInterviewsMutation";
 import type { InterviewFormData } from "../../schemas/interviewsSchema";
 import { InterviewForm } from "./InterviewForm";
+import { useIsMobile } from "../../hooks/useIsMobile";
 
 interface InterviewDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const InterviewDialog = ({
   applicationId,
   interview,
 }: InterviewDialogProps) => {
+  const isMobile = useIsMobile();
   const createMutation = useCreateInterview(applicationId);
   const updateMutation = useUpdateInterview(applicationId);
   const [serverError, setServerError] = useState<string>();
@@ -58,7 +60,13 @@ export const InterviewDialog = ({
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <DialogTitle
         sx={{
           fontWeight: 700,

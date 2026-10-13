@@ -40,7 +40,6 @@ export const DraggableCard = ({ application }: DraggableCardProps) => {
         cursor: "grab",
         opacity: isDragging ? 0.5 : 1,
         "&:hover": { borderColor: "text.secondary" },
-        touchAction: "none",
       }}
     >
       <Stack

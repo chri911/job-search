@@ -7,14 +7,21 @@ interface StatsCardProps {
   value: string | number;
   hintValue?: string;
   hintLabel?: string;
+  hintTone?: "positive" | "negative";
 }
 
-const StatsCard = ({ label, value, hintValue, hintLabel }: StatsCardProps) => {
+const StatsCard = ({
+  label,
+  value,
+  hintValue,
+  hintLabel,
+  hintTone,
+}: StatsCardProps) => {
   return (
     <Paper
       elevation={0}
       sx={{
-        p: 2.5,
+        p: { xs: 2, sm: 2.5 },
         border: "1px solid",
         borderColor: "divider",
         borderRadius: 3,
@@ -31,7 +38,10 @@ const StatsCard = ({ label, value, hintValue, hintLabel }: StatsCardProps) => {
           {hintValue && (
             <Box
               component="span"
-              sx={{ color: "success.main", fontWeight: 600 }}
+              sx={{
+                color: hintTone === "negative" ? "error.main" : "success.main",
+                fontWeight: 600,
+              }}
             >
               {hintValue}{" "}
             </Box>
@@ -48,7 +58,7 @@ function StatCardSkeleton() {
     <Paper
       elevation={0}
       sx={{
-        p: 2.5,
+        p: { xs: 2, sm: 2.5 },
         border: "1px solid",
         borderColor: "divider",
         borderRadius: 3,
@@ -83,6 +93,7 @@ const buildCards = (stats: DashboardStats | undefined): StatsCardProps[] => {
         ? `${stats.responseRateDelta > 0 ? "+" : ""}${stats.responseRateDelta}%`
         : undefined,
       hintLabel: "this month",
+      hintTone: (stats?.responseRateDelta ?? 0) < 0 ? "negative" : "positive",
     },
     {
       label: "Offers",
@@ -116,8 +127,8 @@ export const StatsCards = () => {
 
   return (
     <Grid container spacing={2} sx={{ mb: 3 }}>
-      {cards.map((card, index) => (
-        <Grid key={index} size={{ xs: 12, sm: 6, md: 3 }}>
+      {cards.map((card) => (
+        <Grid key={card.label} size={{ xs: 16, md: 3 }}>
           {isLoading ? <StatCardSkeleton /> : <StatsCard {...card} />}
         </Grid>
       ))}

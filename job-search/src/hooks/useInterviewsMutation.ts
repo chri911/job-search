@@ -12,6 +12,7 @@ export const useCreateInterview = (applicationId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["applications", applicationId, "interviews"],
       });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };
@@ -31,6 +32,7 @@ export const useUpdateInterview = (applicationId: string) => {
       queryClient.invalidateQueries({
         queryKey: ["applications", applicationId, "interviews"],
       });
+      queryClient.invalidateQueries({ queryKey: ["interviews"] });
     },
   });
 };

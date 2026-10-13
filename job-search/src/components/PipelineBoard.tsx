@@ -2,7 +2,14 @@ import type { Application, ApplicationStatus } from "../types";
 import { Alert, Box } from "@mui/material";
 import { useUpdateApplicationStatus } from "../hooks/useApplicationsMutations";
 import type { DragEndEvent } from "@dnd-kit/core/dist/types/events";
-import { DndContext } from "@dnd-kit/core";
+import {
+  DndContext,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  useSensor,
+  useSensors,
+} from "@dnd-kit/core";
 import DroppableColumn from "./DroppableColumn";
 
 interface PipeLineBoardProps {
@@ -29,6 +36,13 @@ export const PipelineBoard = ({
   onStatusChangeResult,
 }: PipeLineBoardProps) => {
   const updateStatusMutation = useUpdateApplicationStatus();
+  const sensors = useSensors(
+    useSensor(MouseSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 250, tolerance: 5 },
+    }),
+    useSensor(KeyboardSensor),
+  );
 
   if (isError) {
     return <Alert severity="error">Failed to load applications</Alert>;
@@ -41,7 +55,7 @@ export const PipelineBoard = ({
     const newStatus = over.id as ApplicationStatus;
 
     const application = applications?.find((a) => a.id === applicationId);
-    if (!application || application.status === newStatus) return; // не изменилось — пропускаем
+    if (!application || application.status === newStatus) return;
 
     updateStatusMutation.mutate(
       { id: applicationId, status: newStatus },
@@ -60,7 +74,7 @@ export const PipelineBoard = ({
   };
 
   return (
-    <DndContext onDragEnd={handleDragEnd}>
+    <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
       <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 2 }}>
         {columns.map((col) => (
           <DroppableColumn

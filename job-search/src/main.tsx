@@ -5,7 +5,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { theme } from "./theme.ts";
-import App from "./App.tsx";
+import { App } from "./App.tsx";
 import { Overview } from "./pages/Overview.tsx";
 import { Applications } from "./pages/Applications.tsx";
 import { Pipeline } from "./pages/Pipeline.tsx";

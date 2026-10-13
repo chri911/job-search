@@ -1,24 +1,63 @@
 import { Outlet } from "react-router-dom";
-import { Box } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  Snackbar,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { ContentContainer } from "./components/ContentContainer";
-import { useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
+import type { Application } from "./types";
+import { ApplicationsDialog } from "./components/ApplicationsDialog";
+
+type Severity = "success" | "error";
 
 export interface AppContextType {
-  setTopBarActions: (actions: ReactNode) => void;
+  openApplicationDialog: (application?: Application) => void;
+  showSnackbar: (message: string, severity: Severity) => void;
 }
 
-function App() {
-  const [topBarActions, setTopBarActions] = useState<ReactNode>(null);
+export const App = () => {
+  const theme = useTheme();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [editingApplication, setEditingApplication] = useState<
+    Application | undefined
+  >();
+  const [snackbar, setSnackbar] = useState<{
+    message: string;
+    severity: Severity;
+  } | null>(null);
+
+  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const openApplicationDialog = (application?: Application) => {
+    setEditingApplication(application);
+    setDialogOpen(true);
+  };
+
+  const showSnackbar = (message: string, severity: Severity) => {
+    setSnackbar({ message, severity });
+  };
+  const [prevIsDesktop, setPrevIsDesktop] = useState(isDesktop);
+  if (isDesktop !== prevIsDesktop) {
+    setPrevIsDesktop(isDesktop);
+    if (isDesktop) setMobileOpen(false);
+  }
   return (
-    <Box sx={{ display: "flex", height: "100vh", bgcolor: "#fff" }}>
+    <Box sx={{ display: "flex", height: "100dvh", bgcolor: "#fff" }}>
       <Sidebar
         user={{
           name: "Anna Kowalska",
           email: "anna.kowalska@example.com",
           initials: "AK",
         }}
+        mobileOpen={mobileOpen}
+        onMobileClose={() => setMobileOpen(false)}
       />
       <Box
         sx={{
@@ -28,13 +67,48 @@ function App() {
           overflow: "auto",
         }}
       >
-        <TopBar actions={topBarActions} />
+        <TopBar
+          onMenuClick={() => setMobileOpen(true)}
+          actions={
+            <Button
+              variant="contained"
+              color="accent"
+              onClick={() => openApplicationDialog()}
+              sx={{ borderRadius: 2 }}
+            >
+              Add application
+            </Button>
+          }
+        />
         <ContentContainer>
-          <Outlet context={{ setTopBarActions } satisfies AppContextType} />
+          <Outlet
+            context={
+              { openApplicationDialog, showSnackbar } satisfies AppContextType
+            }
+          />
         </ContentContainer>
       </Box>
+      <ApplicationsDialog
+        open={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        application={editingApplication}
+        onResult={showSnackbar}
+      />
+
+      <Snackbar
+        open={!!snackbar}
+        autoHideDuration={4000}
+        onClose={() => setSnackbar(null)}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+      >
+        <Alert
+          severity={snackbar?.severity}
+          onClose={() => setSnackbar(null)}
+          sx={{ width: "100%" }}
+        >
+          {snackbar?.message}
+        </Alert>
+      </Snackbar>
     </Box>
   );
-}
-
-export default App;
+};

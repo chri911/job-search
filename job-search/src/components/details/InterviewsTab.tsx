@@ -16,17 +16,11 @@ import { InterviewDialog } from "./InterviewDialog";
 import { InterviewStatusChip } from "./InterviewStatusChip";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import { interviewTypeLabels } from "../../constants/interviewLabels";
 
 interface InterviewsTabProps {
   applicationId: string;
 }
-
-const typeLabels: Record<Interview["type"], string> = {
-  phone: "Phone screen",
-  technical: "Technical",
-  onsite: "Onsite",
-  final: "Final round",
-};
 
 const formatDateTime = (dateString: string): string => {
   return new Date(dateString).toLocaleString("en-GB", {
@@ -93,7 +87,7 @@ export const InterviewsTab = ({ applicationId }: InterviewsTabProps) => {
               >
                 <Box sx={{ minWidth: 110 }}>
                   <Typography sx={{ fontSize: 14, fontWeight: 500 }}>
-                    {typeLabels[interview.type]}
+                    {interviewTypeLabels[interview.type]}
                   </Typography>
                   <Typography sx={{ fontSize: 13, color: "text.secondary" }}>
                     {formatDateTime(interview.scheduledAt)}

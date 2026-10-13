@@ -8,6 +8,7 @@ import type {
   DashboardStats,
   Interview,
   InterviewFormValues,
+  InterviewWithApplication,
   PaginatedResponse,
 } from "../types";
 export interface FetchApplicationsParams {
@@ -43,19 +44,19 @@ export const fetchDashboardStats = (): Promise<DashboardStats> => {
   return apiClient<DashboardStats>("/api/dashboard/stats");
 };
 
-export function fetchApplicationContacts(
+export const fetchApplicationContacts = (
   applicationId: string,
-): Promise<Contact[]> {
+): Promise<Contact[]> => {
   return apiClient<Contact[]>(`/api/applications/${applicationId}/contacts`);
-}
+};
 
-export function fetchApplicationInterviews(
+export const fetchApplicationInterviews = (
   applicationId: string,
-): Promise<Interview[]> {
+): Promise<Interview[]> => {
   return apiClient<Interview[]>(
     `/api/applications/${applicationId}/interviews`,
   );
-}
+};
 
 export const createApplication = (
   data: ApplicationFormValues,
@@ -122,5 +123,13 @@ export const updateInterview = (
   return apiClient<Interview>(
     `/api/applications/${applicationId}/interviews/${interviewId}`,
     { method: "PATCH", body: JSON.stringify(data) },
+  );
+};
+
+export const fetchUpcomingInterviews = (
+  limit = 5,
+): Promise<InterviewWithApplication[]> => {
+  return apiClient<InterviewWithApplication[]>(
+    `/api/interviews?upcoming=true&limit=${limit}`,
   );
 };

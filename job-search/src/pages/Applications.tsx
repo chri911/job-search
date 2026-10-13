@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Snackbar } from "@mui/material";
+import { Box } from "@mui/material";
 import { ApplicationsHeader } from "../components/ApplicationsHeader";
 import { useApplications } from "../hooks/useApplications";
 import { StatsCards } from "../components/StatsCards";
@@ -6,17 +6,16 @@ import { useEffect, useState } from "react";
 import type { Application, ApplicationStatus, ViewMode } from "../types";
 import { FiltersBar } from "../components/FiltersBar";
 import { ApplicationsTable } from "../components/ApplcationsTable";
-import { ApplicationsDialog } from "../components/ApplicationsDialog";
 import { useOutletContext, useSearchParams } from "react-router-dom";
-import type { AppContextType } from "../App";
 import { useDeleteApplication } from "../hooks/useApplicationsMutations";
 import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { PipelineBoard } from "../components/PipelineBoard";
+import type { AppContextType } from "../App";
 
 export const Applications = () => {
-  const { setTopBarActions } = useOutletContext<AppContextType>();
-
+  const { openApplicationDialog, showSnackbar } =
+    useOutletContext<AppContextType>();
   const deleteMutation = useDeleteApplication();
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchInput, setSearchInput] = useState(
@@ -51,16 +50,8 @@ export const Applications = () => {
   });
   const applications = data?.items;
   const total = data?.total || 0;
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [editingApplication, setEditingApplication] = useState<
-    Application | undefined
-  >();
-  const [deleteTarget, setDeleteTarget] = useState<Application | null>(null);
 
-  const [snackbar, setSnackbar] = useState<{
-    message: string;
-    severity: "success" | "error";
-  } | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<Application | null>(null);
 
   const handlePageChange = (newPage: number) => {
     setSearchParams((prev) => {
@@ -123,18 +114,8 @@ export const Applications = () => {
     });
   };
 
-  const handleAddClick = () => {
-    setEditingApplication(undefined);
-    setDialogOpen(true);
-  };
-
   const handleEditClick = (application: Application) => {
-    setEditingApplication(application);
-    setDialogOpen(true);
-  };
-
-  const handleDialogClose = () => {
-    setDialogOpen(false);
+    openApplicationDialog(application);
   };
 
   const handleDeleteClick = (application: Application) => {
@@ -146,33 +127,14 @@ export const Applications = () => {
     const company = deleteTarget.company;
     deleteMutation.mutate(deleteTarget.id, {
       onSuccess: () => {
-        setSnackbar({ message: `${company} deleted`, severity: "success" });
+        showSnackbar(`${company} deleted`, "success");
         setDeleteTarget(null);
       },
       onError: () => {
-        setSnackbar({
-          message: "Failed to delete application",
-          severity: "error",
-        });
+        showSnackbar("Failed to delete application", "error");
       },
     });
   };
-
-  useEffect(() => {
-    setTopBarActions(
-      <Button
-        variant="contained"
-        color="accent"
-        onClick={handleAddClick}
-        sx={{ borderRadius: 2 }}
-      >
-        Add application
-      </Button>,
-    );
-
-    return () => setTopBarActions(null);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   useEffect(() => {
     handleSearchSync(debouncedSearch);
@@ -218,16 +180,10 @@ export const Applications = () => {
             isLoading={isBoardLoading}
             isError={isBoardError}
             onStatusChangeResult={(message, severity) =>
-              setSnackbar({ message, severity })
+              showSnackbar(message, severity)
             }
           />
         )}
-        <ApplicationsDialog
-          open={dialogOpen}
-          onClose={handleDialogClose}
-          application={editingApplication}
-          onResult={(message, severity) => setSnackbar({ message, severity })}
-        />
         <ConfirmDialog
           open={!!deleteTarget}
           title="Delete application"
@@ -236,20 +192,6 @@ export const Applications = () => {
           onConfirm={handleConfirmDelete}
           onCancel={() => setDeleteTarget(null)}
         />
-        <Snackbar
-          open={!!snackbar}
-          autoHideDuration={4000}
-          onClose={() => setSnackbar(null)}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        >
-          <Alert
-            severity={snackbar?.severity}
-            onClose={() => setSnackbar(null)}
-            sx={{ width: "100%" }}
-          >
-            {snackbar?.message}
-          </Alert>
-        </Snackbar>
       </Box>
     </>
   );

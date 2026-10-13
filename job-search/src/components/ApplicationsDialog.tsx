@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { ApplicationsForm } from "./ApplicationsForm";
 import { ApiError } from "../api/client";
+import { useIsMobile } from "../hooks/useIsMobile";
 
 interface ApplicationsDialogProps {
   open: boolean;
@@ -23,6 +24,7 @@ export const ApplicationsDialog = ({
   application,
   onResult,
 }: ApplicationsDialogProps) => {
+  const isMobile = useIsMobile();
   const createMutation = useCreateApplication();
   const updateMutation = useUpdateApplication();
 
@@ -75,7 +77,13 @@ export const ApplicationsDialog = ({
   }, [open]);
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog
+      open={open}
+      onClose={onClose}
+      maxWidth="sm"
+      fullWidth
+      fullScreen={isMobile}
+    >
       <DialogTitle sx={{ fontWeight: 700 }}>
         {isEditMode ? "Edit application" : "Add application"}
         <IconButton onClick={onClose} size="small">
