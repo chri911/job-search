@@ -24,8 +24,9 @@ export default function DroppableColumn({
     <Box
       ref={setNodeRef}
       sx={{
-        minWidth: 260,
-        flex: "1 1 260px",
+        flex: { xs: "0 0 min(85vw, 320px)", md: "1 1 260px" },
+        minWidth: { md: 260 },
+        scrollSnapAlign: "start",
         bgcolor: isOver ? "action.hover" : "grey.50",
         borderRadius: 3,
         p: 2,

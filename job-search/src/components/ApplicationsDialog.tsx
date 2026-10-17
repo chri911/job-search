@@ -5,11 +5,9 @@ import {
 } from "../hooks/useApplicationsMutations";
 import type { ApplicationFormData } from "../schemas/applicationSchema";
 import type { Application } from "../types";
-import { Dialog, DialogContent, DialogTitle, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { ApplicationsForm } from "./ApplicationsForm";
 import { ApiError } from "../api/client";
-import { useIsMobile } from "../hooks/useIsMobile";
+import { ResponsiveDialog } from "./ResponsiveDialog";
 
 interface ApplicationsDialogProps {
   open: boolean;
@@ -24,7 +22,6 @@ export const ApplicationsDialog = ({
   application,
   onResult,
 }: ApplicationsDialogProps) => {
-  const isMobile = useIsMobile();
   const createMutation = useCreateApplication();
   const updateMutation = useUpdateApplication();
 
@@ -77,29 +74,19 @@ export const ApplicationsDialog = ({
   }, [open]);
 
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      fullScreen={isMobile}
+      title={isEditMode ? "Edit application" : "Add application"}
     >
-      <DialogTitle sx={{ fontWeight: 700 }}>
-        {isEditMode ? "Edit application" : "Add application"}
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent dividers sx={{ maxHeight: "70vh", overflowY: "auto" }}>
-        <ApplicationsForm
-          key={application?.id ?? "new"}
-          defaultValues={application}
-          onSubmit={handleSubmit}
-          isSubmitting={mutation.isPending}
-          serverError={serverError}
-          fieldErrors={fieldErrors}
-        />
-      </DialogContent>
-    </Dialog>
+      <ApplicationsForm
+        key={application?.id ?? "new"}
+        defaultValues={application}
+        onSubmit={handleSubmit}
+        isSubmitting={mutation.isPending}
+        serverError={serverError}
+        fieldErrors={fieldErrors}
+      />
+    </ResponsiveDialog>
   );
 };

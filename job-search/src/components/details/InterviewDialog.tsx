@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { Dialog, DialogTitle, DialogContent, IconButton } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
 import { ApiError } from "../../api/client";
 import type { Interview } from "../../types";
 import {
@@ -9,7 +7,7 @@ import {
 } from "../../hooks/useInterviewsMutation";
 import type { InterviewFormData } from "../../schemas/interviewsSchema";
 import { InterviewForm } from "./InterviewForm";
-import { useIsMobile } from "../../hooks/useIsMobile";
+import { ResponsiveDialog } from "../ResponsiveDialog";
 
 interface InterviewDialogProps {
   open: boolean;
@@ -24,7 +22,6 @@ export const InterviewDialog = ({
   applicationId,
   interview,
 }: InterviewDialogProps) => {
-  const isMobile = useIsMobile();
   const createMutation = useCreateInterview(applicationId);
   const updateMutation = useUpdateInterview(applicationId);
   const [serverError, setServerError] = useState<string>();
@@ -60,35 +57,18 @@ export const InterviewDialog = ({
   };
 
   return (
-    <Dialog
+    <ResponsiveDialog
       open={open}
       onClose={onClose}
-      maxWidth="sm"
-      fullWidth
-      fullScreen={isMobile}
+      title={isEditMode ? "Edit application" : "Add application"}
     >
-      <DialogTitle
-        sx={{
-          fontWeight: 700,
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        {isEditMode ? "Edit interview" : "Add interview"}
-        <IconButton onClick={onClose} size="small">
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      </DialogTitle>
-      <DialogContent>
-        <InterviewForm
-          key={interview?.id ?? "new"}
-          defaultValues={interview}
-          onSubmit={handleSubmit}
-          isSubmitting={mutation.isPending}
-          serverError={serverError}
-        />
-      </DialogContent>
-    </Dialog>
+      <InterviewForm
+        key={interview?.id ?? "new"}
+        defaultValues={interview}
+        onSubmit={handleSubmit}
+        isSubmitting={mutation.isPending}
+        serverError={serverError}
+      />
+    </ResponsiveDialog>
   );
 };

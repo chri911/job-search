@@ -1,5 +1,4 @@
-import { Box } from "@mui/material";
-import { ApplicationsHeader } from "../components/ApplicationsHeader";
+import { Box, Typography } from "@mui/material";
 import { useApplications } from "../hooks/useApplications";
 import { StatsCards } from "../components/StatsCards";
 import { useEffect, useState } from "react";
@@ -12,8 +11,13 @@ import { ConfirmDialog } from "../components/ConfirmDialog";
 import { useDebouncedValue } from "../hooks/useDebouncedValue";
 import { PipelineBoard } from "../components/PipelineBoard";
 import type { AppContextType } from "../App";
+import { PageHeader } from "../components/PageHeader";
+import { useBreakpoints } from "../hooks/useBreakpoints";
+import { ApplicationsList } from "../components/ApplicationsList";
+import { ApplicationsPagination } from "../components/ApplicationPagination";
 
 export const Applications = () => {
+  const { isCompact } = useBreakpoints();
   const { openApplicationDialog, showSnackbar } =
     useOutletContext<AppContextType>();
   const deleteMutation = useDeleteApplication();
@@ -144,10 +148,14 @@ export const Applications = () => {
   return (
     <>
       <Box>
-        <ApplicationsHeader
+        <PageHeader
           title="Applications"
           subtitle="Track every opportunity from first contact to offer."
-          total={total}
+          aside={
+            <Typography sx={{ color: "text.secondary", fontSize: 14, pt: 1 }}>
+              {total} total
+            </Typography>
+          }
         />
         <StatsCards />
         <FiltersBar
@@ -158,7 +166,34 @@ export const Applications = () => {
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
         />
-        {viewMode === "list" ? (
+        {viewMode === "board" ? (
+          <PipelineBoard
+            applications={boardData?.items}
+            isLoading={isBoardLoading}
+            isError={isBoardError}
+            onStatusChangeResult={(message, severity) =>
+              showSnackbar(message, severity)
+            }
+          />
+        ) : isCompact ? (
+          <>
+            <ApplicationsList
+              applications={applications}
+              isLoading={isLoading}
+              isError={isError}
+              skeletonCount={Math.min(limit, 5)}
+              onEditClick={handleEditClick}
+              onDeleteClick={handleDeleteClick}
+            />
+            <ApplicationsPagination
+              total={total}
+              page={page}
+              limit={limit}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+            />
+          </>
+        ) : (
           <ApplicationsTable
             applications={applications}
             isLoading={isLoading}
@@ -173,15 +208,6 @@ export const Applications = () => {
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
             onSortChange={handleSortChange}
-          />
-        ) : (
-          <PipelineBoard
-            applications={boardData?.items}
-            isLoading={isBoardLoading}
-            isError={isBoardError}
-            onStatusChangeResult={(message, severity) =>
-              showSnackbar(message, severity)
-            }
           />
         )}
         <ConfirmDialog

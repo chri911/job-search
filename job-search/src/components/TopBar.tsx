@@ -1,6 +1,7 @@
 import { Box, IconButton } from "@mui/material";
 import type { ReactNode } from "react";
 import MenuIcon from "@mui/icons-material/Menu";
+import { CONTENT_MAX_WIDTH, pageGutter, TOPBAR_HEIGHT } from "../layout";
 
 interface TopBarProps {
   actions?: ReactNode;
@@ -12,7 +13,7 @@ export function TopBar({ actions, onMenuClick }: TopBarProps) {
     <Box
       component="header"
       sx={{
-        height: 64,
+        height: TOPBAR_HEIGHT,
         px: { xs: 2, md: 4 },
         display: "flex",
         alignItems: "center",
@@ -20,14 +21,25 @@ export function TopBar({ actions, onMenuClick }: TopBarProps) {
         flexShrink: 0,
       }}
     >
-      <IconButton
-        edge="start"
-        onClick={onMenuClick}
-        aria-label="Open navigation"
-        sx={{ display: { xs: "inline-flex", lg: "none" } }}
+      <Box
+        sx={{
+          height: "100%",
+          maxWidth: CONTENT_MAX_WIDTH,
+          mx: "auto",
+          px: pageGutter,
+          display: "flex",
+          alignItems: "center",
+        }}
       >
-        <MenuIcon />
-      </IconButton>
+        <IconButton
+          edge="start"
+          onClick={onMenuClick}
+          aria-label="Open navigation"
+          sx={{ display: { xs: "inline-flex", lg: "none" } }}
+        >
+          <MenuIcon />
+        </IconButton>
+      </Box>
       <Box sx={{ ml: "auto" }}>{actions}</Box>
     </Box>
   );

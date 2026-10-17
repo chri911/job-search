@@ -75,7 +75,18 @@ export const PipelineBoard = ({
 
   return (
     <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
-      <Box sx={{ display: "flex", gap: 2, overflowX: "auto", pb: 2 }}>
+      <Box
+        sx={{
+          display: "flex",
+          gap: 2,
+          overflowX: "auto",
+          pb: 2,
+          mx: { xs: -2, sm: -3, md: 0 },
+          px: { xs: 2, sm: 3, md: 0 },
+          scrollSnapType: { xs: "x mandatory", md: "none" },
+          scrollPaddingLeft: { xs: 16, sm: 24 },
+        }}
+      >
         {columns.map((col) => (
           <DroppableColumn
             key={col.status}

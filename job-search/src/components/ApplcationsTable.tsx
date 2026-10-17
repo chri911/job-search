@@ -10,16 +10,15 @@ import {
   Typography,
   Alert,
   Skeleton,
-  TablePagination,
   TableSortLabel,
-  useTheme,
-  useMediaQuery,
 } from "@mui/material";
 import type { Application } from "../types";
 import { StatusChip } from "./StatusChip";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { RowActionsMenu } from "./RowActionsMenu";
 import { useNavigate } from "react-router-dom";
+import { formatDate, locationLabel } from "../utils/applicationFormat";
+import { ApplicationsPagination } from "./ApplicationPagination";
 
 interface ApplicationsTableProps {
   applications: Application[];
@@ -38,21 +37,6 @@ interface ApplicationsTableProps {
 }
 
 const ROW_HEIGHT = 72;
-
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString("en-GB", {
-    day: "numeric",
-    month: "short",
-    year: "numeric",
-  });
-};
-
-const locationLabel = (app: Application): string => {
-  const modeLabel =
-    app.workMode.charAt(0).toUpperCase() + app.workMode.slice(1);
-  return `${modeLabel} · ${app.location}`;
-};
 
 const sortableColumns: { field: string; label: string }[] = [
   { field: "company", label: "Company" },
@@ -77,8 +61,6 @@ export const ApplicationsTable = ({
   onDeleteClick,
 }: ApplicationsTableProps) => {
   const navigate = useNavigate();
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
   if (isError) {
     return <Alert severity="error">Failed to load applications</Alert>;
@@ -209,16 +191,12 @@ export const ApplicationsTable = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <TablePagination
-        component="div"
-        count={total}
-        page={page - 1}
-        onPageChange={(_, newPage) => onPageChange(newPage)}
-        rowsPerPage={limit}
-        onRowsPerPageChange={(e) =>
-          onRowsPerPageChange(parseInt(e.target.value, 10))
-        }
-        rowsPerPageOptions={isMobile ? [] : [5, 10, 25, 50]}
+      <ApplicationsPagination
+        total={total}
+        page={page}
+        limit={limit}
+        onPageChange={onPageChange}
+        onRowsPerPageChange={onRowsPerPageChange}
       />
     </Paper>
   );

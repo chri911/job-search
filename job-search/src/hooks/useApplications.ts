@@ -19,3 +19,7 @@ export const useApplication = (id: string | undefined) => {
     enabled: !!id,
   });
 };
+
+export const useBoardApplications = (search?: string) => {
+  return useApplications({ search, limit: 1000 });
+};

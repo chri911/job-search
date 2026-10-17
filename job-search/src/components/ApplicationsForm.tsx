@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Alert, Button, MenuItem, Stack, TextField } from "@mui/material";
 import { useEffect } from "react";
 import { FormTextField } from "./FormTextField";
+import { FormActions, FormGrid, FullWidth } from "./forms/FormLayout";
 
 interface ApplicationFormProps {
   defaultValues?: Partial<ApplicationFormData>;
@@ -68,104 +69,118 @@ export const ApplicationsForm = ({
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Stack spacing={2.5}>
-        {serverError && <Alert severity="error">{serverError}</Alert>}
-        <FormTextField
-          name="company"
-          control={control}
-          label="Company"
-          errorMessage={errors.company?.message}
-        />
-        <FormTextField
-          name="position"
-          control={control}
-          label="Position"
-          errorMessage={errors.position?.message}
-        />
-        <FormTextField
-          name="location"
-          control={control}
-          label="Location"
-          errorMessage={errors.location?.message}
-        />
-        <Controller
-          name="workMode"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              select
-              label="Work mode"
-              fullWidth
-              error={!!errors.workMode}
-              helperText={errors.workMode?.message}
-            >
-              {workModeOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
+      <FormGrid>
+        <Stack spacing={2.5}>
+          {serverError && (
+            <FullWidth>
+              <Alert severity="error">{serverError}</Alert>
+            </FullWidth>
           )}
-        />
-        <Controller
-          name="status"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              select
-              label="Status"
-              fullWidth
-              error={!!errors.status}
-              helperText={errors.status?.message}
-            >
-              {statusOptions.map((option) => (
-                <MenuItem key={option.value} value={option.value}>
-                  {option.label}
-                </MenuItem>
-              ))}
-            </TextField>
-          )}
-        />
-        <Controller
-          name="appliedAt"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              type="date"
-              label="Applied date"
-              fullWidth
-              slotProps={{ inputLabel: { shrink: true } }}
-              error={!!errors.appliedAt}
-              helperText={errors.appliedAt?.message}
+          <FullWidth>
+            <FormTextField
+              name="company"
+              control={control}
+              label="Company"
+              errorMessage={errors.company?.message}
             />
-          )}
-        />
-        <Controller
-          name="nextStep"
-          control={control}
-          render={({ field }) => (
-            <TextField
-              {...field}
-              label="Next step"
-              fullWidth
-              placeholder="e.g. Technical interview"
-              error={!!errors.nextStep}
-              helperText={errors.nextStep?.message}
+          </FullWidth>
+          <FullWidth>
+            <FormTextField
+              name="position"
+              control={control}
+              label="Position"
+              errorMessage={errors.position?.message}
             />
-          )}
-        />
-        <Button
-          type="submit"
-          variant="contained"
-          color="accent"
-          disabled={isSubmitting}
-        >
-          {isSubmitting ? "Saving..." : "Save application"}
-        </Button>
-      </Stack>
+          </FullWidth>
+          <FormTextField
+            name="location"
+            control={control}
+            label="Location"
+            errorMessage={errors.location?.message}
+          />
+          <Controller
+            name="workMode"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                label="Work mode"
+                fullWidth
+                error={!!errors.workMode}
+                helperText={errors.workMode?.message}
+              >
+                {workModeOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                select
+                label="Status"
+                fullWidth
+                error={!!errors.status}
+                helperText={errors.status?.message}
+              >
+                {statusOptions.map((option) => (
+                  <MenuItem key={option.value} value={option.value}>
+                    {option.label}
+                  </MenuItem>
+                ))}
+              </TextField>
+            )}
+          />
+          <Controller
+            name="appliedAt"
+            control={control}
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="date"
+                label="Applied date"
+                fullWidth
+                slotProps={{ inputLabel: { shrink: true } }}
+                error={!!errors.appliedAt}
+                helperText={errors.appliedAt?.message}
+              />
+            )}
+          />
+          <FullWidth>
+            <Controller
+              name="nextStep"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Next step"
+                  fullWidth
+                  placeholder="e.g. Technical interview"
+                  error={!!errors.nextStep}
+                  helperText={errors.nextStep?.message}
+                />
+              )}
+            />
+          </FullWidth>
+          <FormActions>
+            <Button
+              type="submit"
+              variant="contained"
+              color="accent"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Saving..." : "Save application"}
+            </Button>
+          </FormActions>
+        </Stack>
+      </FormGrid>
     </form>
   );
 };

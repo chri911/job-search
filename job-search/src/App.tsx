@@ -1,18 +1,12 @@
 import { Outlet } from "react-router-dom";
-import {
-  Alert,
-  Box,
-  Button,
-  Snackbar,
-  useMediaQuery,
-  useTheme,
-} from "@mui/material";
+import { Alert, Box, Button, Snackbar } from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { ContentContainer } from "./components/ContentContainer";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { Application } from "./types";
 import { ApplicationsDialog } from "./components/ApplicationsDialog";
+import { useBreakpoints } from "./hooks/useBreakpoints";
 
 type Severity = "success" | "error";
 
@@ -22,7 +16,6 @@ export interface AppContextType {
 }
 
 export const App = () => {
-  const theme = useTheme();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<
     Application | undefined
@@ -32,7 +25,8 @@ export const App = () => {
     severity: Severity;
   } | null>(null);
 
-  const isDesktop = useMediaQuery(theme.breakpoints.up("lg"));
+  const { isDesktop, isPhone } = useBreakpoints();
+
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const openApplicationDialog = (application?: Application) => {
@@ -74,9 +68,9 @@ export const App = () => {
               variant="contained"
               color="accent"
               onClick={() => openApplicationDialog()}
-              sx={{ borderRadius: 2 }}
+              sx={{ borderRadius: 2, whiteSpace: "nowrap" }}
             >
-              Add application
+              {isPhone ? "Add" : "Add application"}
             </Button>
           }
         />

@@ -18,6 +18,8 @@ export const RowActionsMenu = ({ onEdit, onDelete }: RowActionsMenuProps) => {
           e.stopPropagation();
           setAnchorEl(e.currentTarget);
         }}
+        aria-label="More actions"
+        sx={{ p: { xs: 1.25, md: 0.75 } }}
       >
         <MoreVertIcon fontSize="small" />
       </IconButton>
