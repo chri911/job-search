@@ -1,8 +1,9 @@
-import { Alert, Box, Paper, Skeleton, Typography } from "@mui/material";
+import { Box, Paper, Skeleton, Typography } from "@mui/material";
 import { interviewTypeLabels } from "../constants/interviewLabels";
 import { useNavigate } from "react-router-dom";
 import type { InterviewWithApplication } from "../types";
 import { useUpcomingInterviews } from "../hooks/useUpcomingInterviews";
+import { QueryErrorState } from "./errors/QueryErrorState";
 
 const LIST_LIMIT = 5;
 const ROW_HEIGHT = 64;
@@ -82,6 +83,9 @@ export const UpcomingInterviews = () => {
     data: interviews,
     isLoading,
     isError,
+    error,
+    refetch,
+    isFetching,
   } = useUpcomingInterviews(LIST_LIMIT);
   return (
     <Paper
@@ -98,7 +102,13 @@ export const UpcomingInterviews = () => {
       </Typography>
 
       <Box sx={{ minHeight: ROW_HEIGHT * 3 }}>
-        {isError && <Alert severity="error">Failed to load interviews</Alert>}
+        {isError && (
+          <QueryErrorState
+            error={error}
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+          />
+        )}
 
         {isLoading &&
           Array.from({ length: 3 }).map((_, i) => (

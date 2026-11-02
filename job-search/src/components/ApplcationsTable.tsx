@@ -8,7 +8,6 @@ import {
   TableBody,
   Box,
   Typography,
-  Alert,
   Skeleton,
   TableSortLabel,
 } from "@mui/material";
@@ -23,7 +22,6 @@ import { ApplicationsPagination } from "./ApplicationPagination";
 interface ApplicationsTableProps {
   applications: Application[];
   isLoading?: boolean;
-  isError?: boolean;
   total: number;
   page: number;
   limit: number;
@@ -48,7 +46,6 @@ const sortableColumns: { field: string; label: string }[] = [
 export const ApplicationsTable = ({
   applications,
   isLoading,
-  isError,
   total,
   page,
   limit,
@@ -61,11 +58,6 @@ export const ApplicationsTable = ({
   onDeleteClick,
 }: ApplicationsTableProps) => {
   const navigate = useNavigate();
-
-  if (isError) {
-    return <Alert severity="error">Failed to load applications</Alert>;
-  }
-
   return (
     <Paper
       elevation={0}

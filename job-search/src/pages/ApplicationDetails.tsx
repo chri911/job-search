@@ -4,10 +4,10 @@ import {
   Typography,
   IconButton,
   Skeleton,
-  Alert,
   Stack,
   Tabs,
   Tab,
+  Button,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { useApplication } from "../hooks/useApplications";
@@ -18,13 +18,23 @@ import { DetailsTab } from "../components/details/DetailsTab";
 import { ContactsTab } from "../components/details/ContactsTab";
 import { InterviewsTab } from "../components/details/InterviewsTab";
 import { ActivityTab } from "../components/details/ActivityTab";
+import { ApiError } from "../api/client";
+import { ErrorState } from "../components/errors/ErrorState";
+import { QueryErrorState } from "../components/errors/QueryErrorState";
 
 type TabValue = "details" | "contacts" | "interviews" | "activity";
 
 export const ApplicationDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { data: application, isLoading, isError, error } = useApplication(id);
+  const {
+    data: application,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useApplication(id);
   const [activeTab, setActiveTab] = useState<TabValue>("details");
   const handleBack = () => navigate("/applications");
 
@@ -45,17 +55,26 @@ export const ApplicationDetails = () => {
     );
   }
 
-  if (isError) {
+  if (isError && !application) {
+    const notFound = error instanceof ApiError && error.status === 404;
     return (
       <Box>
         <IconButton onClick={handleBack} size="small" sx={{ mb: 2 }}>
           <ArrowBackIcon fontSize="small" />
         </IconButton>
-        <Alert severity="error">
-          {error instanceof Error && error.message.includes("404")
-            ? "Application not found"
-            : "Failed to load application"}
-        </Alert>
+        {notFound ? (
+          <ErrorState
+            title="Application not found"
+            message="It may have been deleted, or the link is incorrect."
+            action={<Button onClick={handleBack}>Back to applications</Button>}
+          />
+        ) : (
+          <QueryErrorState
+            error={error}
+            onRetry={() => refetch()}
+            isRetrying={isFetching}
+          />
+        )}
       </Box>
     );
   }

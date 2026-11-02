@@ -1,21 +1,21 @@
-import { Box, Typography } from "@mui/material";
+import { ErrorBoundary } from "react-error-boundary";
 import { StatsCards } from "../components/StatsCards";
 import { UpcomingInterviews } from "../components/UpcomingInterviews";
+import { PageHeader } from "../components/PageHeader";
+import { WidgetErrorFallback } from "../components/errors/fallbacks";
 
 export const Overview = () => {
   return (
-    <Box>
-      <Box sx={{ mb: 3 }}>
-        <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
-          Overview
-        </Typography>
-        <Typography sx={{ color: "text.secondary" }}>
-          Your job search at a glance.
-        </Typography>
-      </Box>
+    <>
+      <PageHeader title="Overview" subtitle="Your job search at a glance." />
 
-      <StatsCards />
-      <UpcomingInterviews />
-    </Box>
+      <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
+        <StatsCards />
+      </ErrorBoundary>
+
+      <ErrorBoundary FallbackComponent={WidgetErrorFallback}>
+        <UpcomingInterviews />
+      </ErrorBoundary>
+    </>
   );
 };

@@ -35,7 +35,13 @@ export const ResponsiveDialog = ({ open, onClose, title, children }: Props) => {
           <CloseIcon fontSize="small" />
         </IconButton>
       </DialogTitle>
-      <DialogContent sx={{ px: { xs: 2, sm: 3 }, pt: "8px !important", pb: 0 }}>
+      <DialogContent
+        sx={{
+          px: { xs: 2, sm: 3 },
+          pt: "8px !important",
+          pb: 0,
+        }}
+      >
         {children}
       </DialogContent>
     </Dialog>

@@ -1,14 +1,22 @@
-import { Typography, Box } from "@mui/material";
+import { Button } from "@mui/material";
+import { ErrorState } from "../components/errors/ErrorState";
+import { useNavigate } from "react-router-dom";
 
 export const NotFound = () => {
+  const navigate = useNavigate();
   return (
-    <Box sx={{ textAlign: "center", py: 8 }}>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 1 }}>
-        Page not found
-      </Typography>
-      <Typography sx={{ color: "text.secondary" }}>
-        The page you're looking for doesn't exist.
-      </Typography>
-    </Box>
+    <ErrorState
+      title="Page not found"
+      message="The page you're looking for doesn't exist."
+      action={
+        <Button
+          variant="contained"
+          color="accent"
+          onClick={() => navigate("/")}
+        >
+          Go to Overview
+        </Button>
+      }
+    />
   );
 };

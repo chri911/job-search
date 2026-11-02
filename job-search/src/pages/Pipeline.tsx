@@ -1,22 +1,29 @@
 import { useOutletContext } from "react-router-dom";
-import { PageHeader } from "../components/PageHeader";
 import { PipelineBoard } from "../components/PipelineBoard";
 import { useBoardApplications } from "../hooks/useApplications";
 import type { AppContextType } from "../App";
+import { QueryErrorState } from "../components/errors/QueryErrorState";
 
 export const Pipeline = () => {
   const { showSnackbar } = useOutletContext<AppContextType>();
-  const { data, isLoading, isError } = useBoardApplications();
+  const { data, isLoading, isError, error, refetch, isFetching } =
+    useBoardApplications();
 
   return (
     <>
-      <PageHeader title="Pipeline" subtitle="Drag cards between stages." />
-      <PipelineBoard
-        applications={data?.items}
-        isLoading={isLoading}
-        isError={isError}
-        onStatusChangeResult={showSnackbar}
-      />
+      {isError && !data ? (
+        <QueryErrorState
+          error={error}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      ) : (
+        <PipelineBoard
+          applications={data?.items}
+          isLoading={isLoading}
+          onStatusChangeResult={showSnackbar}
+        />
+      )}
     </>
   );
 };

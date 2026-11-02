@@ -1,6 +1,8 @@
-import { Alert, Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
+import { Box, Grid, Paper, Skeleton, Typography } from "@mui/material";
 import { useDashboardStats } from "../hooks/useDashboardStats";
 import type { DashboardStats } from "../types";
+import { QueryErrorState } from "./errors/QueryErrorState";
+import { sectionGap } from "../layout";
 
 interface StatsCardProps {
   label: string;
@@ -106,21 +108,25 @@ const buildCards = (stats: DashboardStats | undefined): StatsCardProps[] => {
 };
 
 export const StatsCards = () => {
-  const { data: stats, isLoading, isError, error } = useDashboardStats();
+  const {
+    data: stats,
+    isLoading,
+    isError,
+    error,
+    refetch,
+    isFetching,
+  } = useDashboardStats();
 
-  if (isError) {
+  if (isError && !stats) {
     return (
-      <Grid container spacing={2} sx={{ mb: 3 }}>
-        <Grid size={12}>
-          <Alert
-            severity="error"
-            sx={{ minHeight: 96, display: "flex", alignItems: "center" }}
-          >
-            Failed to load stats
-            {error instanceof Error ? `: ${error.message}` : ""}
-          </Alert>
-        </Grid>
-      </Grid>
+      <Box sx={{ mb: sectionGap }}>
+        <QueryErrorState
+          compact
+          error={error}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      </Box>
     );
   }
   const cards = buildCards(stats);

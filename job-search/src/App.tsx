@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Alert, Box, Button, Snackbar } from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
@@ -7,6 +7,10 @@ import { useState } from "react";
 import type { Application } from "./types";
 import { ApplicationsDialog } from "./components/ApplicationsDialog";
 import { useBreakpoints } from "./hooks/useBreakpoints";
+import { QueryErrorResetBoundary } from "@tanstack/react-query";
+import { ErrorBoundary } from "react-error-boundary";
+import { PageErrorFallback } from "./components/errors/fallbacks";
+import { logError } from "./utils/errors";
 
 type Severity = "success" | "error";
 
@@ -16,6 +20,7 @@ export interface AppContextType {
 }
 
 export const App = () => {
+  const location = useLocation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingApplication, setEditingApplication] = useState<
     Application | undefined
@@ -75,11 +80,25 @@ export const App = () => {
           }
         />
         <ContentContainer>
-          <Outlet
-            context={
-              { openApplicationDialog, showSnackbar } satisfies AppContextType
-            }
-          />
+          <QueryErrorResetBoundary>
+            {({ reset }) => (
+              <ErrorBoundary
+                FallbackComponent={PageErrorFallback}
+                onReset={reset}
+                onError={logError}
+                resetKeys={[location.pathname]}
+              >
+                <Outlet
+                  context={
+                    {
+                      openApplicationDialog,
+                      showSnackbar,
+                    } satisfies AppContextType
+                  }
+                />
+              </ErrorBoundary>
+            )}
+          </QueryErrorResetBoundary>
         </ContentContainer>
       </Box>
       <ApplicationsDialog

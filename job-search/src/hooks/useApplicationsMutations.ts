@@ -72,7 +72,7 @@ export const useUpdateApplicationStatus = () => {
       queryClient.setQueriesData<PaginatedResponse<Application>>(
         { queryKey: ["applications"] },
         (old) => {
-          if (!old) return old;
+          if (!old || !Array.isArray(old.items)) return old;
           return {
             ...old,
             items: old.items.map((app) =>

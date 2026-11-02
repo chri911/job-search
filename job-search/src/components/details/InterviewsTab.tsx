@@ -4,7 +4,6 @@ import {
   List,
   ListItem,
   Skeleton,
-  Alert,
   Stack,
   IconButton,
   Button,
@@ -17,6 +16,7 @@ import { InterviewStatusChip } from "./InterviewStatusChip";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import { interviewTypeLabels } from "../../constants/interviewLabels";
+import { QueryErrorState } from "../errors/QueryErrorState";
 
 interface InterviewsTabProps {
   applicationId: string;
@@ -36,6 +36,9 @@ export const InterviewsTab = ({ applicationId }: InterviewsTabProps) => {
     data: interviews,
     isLoading,
     isError,
+    error,
+    refetch,
+    isFetching,
   } = useApplicationInterviews(applicationId);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingInterview, setEditingInterview] = useState<
@@ -64,7 +67,13 @@ export const InterviewsTab = ({ applicationId }: InterviewsTabProps) => {
         </Button>
       </Box>
 
-      {isError && <Alert severity="error">Failed to load interviews</Alert>}
+      {isError && (
+        <QueryErrorState
+          error={error}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      )}
 
       {isLoading &&
         Array.from({ length: 2 }).map((_, i) => (

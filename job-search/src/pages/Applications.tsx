@@ -1,5 +1,8 @@
 import { Box, Typography } from "@mui/material";
-import { useApplications } from "../hooks/useApplications";
+import {
+  useApplications,
+  useBoardApplications,
+} from "../hooks/useApplications";
 import { StatsCards } from "../components/StatsCards";
 import { useEffect, useState } from "react";
 import type { Application, ApplicationStatus, ViewMode } from "../types";
@@ -15,6 +18,7 @@ import { PageHeader } from "../components/PageHeader";
 import { useBreakpoints } from "../hooks/useBreakpoints";
 import { ApplicationsList } from "../components/ApplicationsList";
 import { ApplicationsPagination } from "../components/ApplicationPagination";
+import { QueryErrorState } from "../components/errors/QueryErrorState";
 
 export const Applications = () => {
   const { isCompact } = useBreakpoints();
@@ -36,7 +40,7 @@ export const Applications = () => {
   const sortField = searchParams.get("sortField") ?? "appliedAt";
   const sortDirection =
     (searchParams.get("sortDirection") as "asc" | "desc") ?? "desc";
-  const { data, isLoading, isError } = useApplications({
+  const { isLoading } = useApplications({
     search: debouncedSearch || undefined,
     status: statusFilter,
     sort: `${sortField}:${sortDirection}`,
@@ -46,14 +50,25 @@ export const Applications = () => {
   const {
     data: boardData,
     isLoading: isBoardLoading,
-    isError: isBoardError,
   } = useApplications({
     search: debouncedSearch || undefined,
     status: "all",
     limit: 1000,
   });
-  const applications = data?.items;
-  const total = data?.total || 0;
+
+  const listQuery = useApplications({
+    search: debouncedSearch || undefined,
+    status: statusFilter,
+    sort: `${sortField}:${sortDirection}`,
+    page,
+    limit,
+  });
+  const boardQuery = useBoardApplications(debouncedSearch || undefined);
+  const activeQuery = viewMode === "board" ? boardQuery : listQuery;
+
+  const applications = listQuery.data?.items;
+  const total = listQuery.data?.total ?? 0;
+  const showError = activeQuery.isError && !activeQuery.data;
 
   const [deleteTarget, setDeleteTarget] = useState<Application | null>(null);
 
@@ -166,11 +181,16 @@ export const Applications = () => {
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
         />
-        {viewMode === "board" ? (
+        {showError ? (
+          <QueryErrorState
+            error={activeQuery.error}
+            onRetry={() => activeQuery.refetch()}
+            isRetrying={activeQuery.isFetching}
+          />
+        ) : viewMode === "board" ? (
           <PipelineBoard
             applications={boardData?.items}
             isLoading={isBoardLoading}
-            isError={isBoardError}
             onStatusChangeResult={(message, severity) =>
               showSnackbar(message, severity)
             }
@@ -180,7 +200,6 @@ export const Applications = () => {
             <ApplicationsList
               applications={applications}
               isLoading={isLoading}
-              isError={isError}
               skeletonCount={Math.min(limit, 5)}
               onEditClick={handleEditClick}
               onDeleteClick={handleDeleteClick}
@@ -197,7 +216,6 @@ export const Applications = () => {
           <ApplicationsTable
             applications={applications}
             isLoading={isLoading}
-            isError={isError}
             total={total}
             page={page}
             limit={limit}

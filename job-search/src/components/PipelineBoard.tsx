@@ -1,5 +1,5 @@
 import type { Application, ApplicationStatus } from "../types";
-import { Alert, Box } from "@mui/material";
+import { Box } from "@mui/material";
 import { useUpdateApplicationStatus } from "../hooks/useApplicationsMutations";
 import type { DragEndEvent } from "@dnd-kit/core/dist/types/events";
 import {
@@ -15,7 +15,6 @@ import DroppableColumn from "./DroppableColumn";
 interface PipeLineBoardProps {
   applications: Application[] | undefined;
   isLoading: boolean;
-  isError: boolean;
   onStatusChangeResult?: (
     message: string,
     severity: "success" | "error",
@@ -32,7 +31,6 @@ const columns: { status: ApplicationStatus; label: string; color: string }[] = [
 export const PipelineBoard = ({
   applications,
   isLoading,
-  isError,
   onStatusChangeResult,
 }: PipeLineBoardProps) => {
   const updateStatusMutation = useUpdateApplicationStatus();
@@ -44,9 +42,6 @@ export const PipelineBoard = ({
     useSensor(KeyboardSensor),
   );
 
-  if (isError) {
-    return <Alert severity="error">Failed to load applications</Alert>;
-  }
   const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (!over) return; // отпущено не над зоной — ничего не делаем

@@ -4,24 +4,31 @@ class ApiError extends Error {
   status: number;
   fields?: Record<string, string>;
 
-  constructor(message: string, status: number, fields: Record<string, string>) {
+  constructor(
+    message: string,
+    status: number,
+    fields?: Record<string, string>,
+  ) {
     super(message);
     this.name = "ApiError";
     this.status = status;
     this.fields = fields;
   }
 }
+
 async function apiClient<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      "Content-Type": "application/json",
-      ...options?.headers,
-    },
-    ...options,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      headers: { "Content-Type": "application/json", ...options?.headers },
+      ...options,
+    });
+  } catch {
+    throw new ApiError("Cannot reach the server", 0);
+  }
 
   if (!response.ok) {
     let message = response.statusText;

@@ -1,5 +1,5 @@
 // src/components/ApplicationsList.tsx
-import { Alert, Box, Link, Paper, Skeleton, Typography } from "@mui/material";
+import { Box, Link, Paper, Skeleton, Typography } from "@mui/material";
 import { Link as RouterLink } from "react-router-dom";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { StatusChip } from "./StatusChip";
@@ -10,7 +10,6 @@ import type { Application } from "../types";
 interface Props {
   applications: Application[] | undefined;
   isLoading: boolean;
-  isError: boolean;
   skeletonCount: number;
   onEditClick: (application: Application) => void;
   onDeleteClick: (application: Application) => void;
@@ -19,14 +18,10 @@ interface Props {
 export const ApplicationsList = ({
   applications,
   isLoading,
-  isError,
   skeletonCount,
   onEditClick,
   onDeleteClick,
 }: Props) => {
-  if (isError)
-    return <Alert severity="error">Failed to load applications</Alert>;
-
   if (isLoading) {
     return (
       <Box>

@@ -13,27 +13,35 @@ import { Interviews } from "./pages/Interviews.tsx";
 import { NotFound } from "./pages/NotFound.tsx";
 import { queryClient } from "./lib/queryClient.ts";
 import { ApplicationDetails } from "./pages/ApplicationDetails.tsx";
+import { ErrorBoundary } from "react-error-boundary";
+import { RootErrorFallback } from "./components/errors/fallbacks.tsx";
+import { logError } from "./utils/errors.ts";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ThemeProvider theme={theme}>
         <CssBaseline>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<App />}>
-                <Route index element={<Overview />} />
-                <Route path="applications" element={<Applications />} />
-                <Route
-                  path="applications/:id"
-                  element={<ApplicationDetails />}
-                />
-                <Route path="pipeline" element={<Pipeline />} />
-                <Route path="interviews" element={<Interviews />} />
-                <Route path="*" element={<NotFound />} />
-              </Route>
-            </Routes>
-          </BrowserRouter>
+          <ErrorBoundary
+            FallbackComponent={RootErrorFallback}
+            onError={logError}
+          >
+            <BrowserRouter>
+              <Routes>
+                <Route path="/" element={<App />}>
+                  <Route index element={<Overview />} />
+                  <Route path="applications" element={<Applications />} />
+                  <Route
+                    path="applications/:id"
+                    element={<ApplicationDetails />}
+                  />
+                  <Route path="pipeline" element={<Pipeline />} />
+                  <Route path="interviews" element={<Interviews />} />
+                  <Route path="*" element={<NotFound />} />
+                </Route>
+              </Routes>
+            </BrowserRouter>
+          </ErrorBoundary>
         </CssBaseline>
       </ThemeProvider>
     </QueryClientProvider>

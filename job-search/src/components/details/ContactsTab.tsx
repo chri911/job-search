@@ -6,7 +6,6 @@ import {
   Avatar,
   Stack,
   Skeleton,
-  Alert,
   Link,
   Button,
   IconButton,
@@ -17,6 +16,7 @@ import type { Contact } from "../../types";
 import ContactDialog from "./ContactDialog";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
+import { QueryErrorState } from "../errors/QueryErrorState";
 
 interface ContactsTabProps {
   applicationId: string;
@@ -36,6 +36,9 @@ export const ContactsTab = ({ applicationId }: ContactsTabProps) => {
     data: contacts,
     isLoading,
     isError,
+    error,
+    refetch,
+    isFetching,
   } = useApplicationContacts(applicationId);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingContact, setEditingContact] = useState<Contact | undefined>();
@@ -60,7 +63,13 @@ export const ContactsTab = ({ applicationId }: ContactsTabProps) => {
           Add contact
         </Button>
       </Box>
-      {isError && <Alert severity="error">Failed to load contacts</Alert>}
+      {isError && (
+        <QueryErrorState
+          error={error}
+          onRetry={() => refetch()}
+          isRetrying={isFetching}
+        />
+      )}
 
       {isLoading &&
         Array.from({ length: 2 }).map((_, i) => (
