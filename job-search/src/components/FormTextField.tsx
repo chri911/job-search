@@ -25,9 +25,10 @@ export const FormTextField = <T extends FieldValues>({
     <Controller
       name={name}
       control={control}
-      render={({ field }) => (
+      render={({ field: { ref, ...field } }) => (
         <TextField
           {...field}
+          inputRef={ref}
           label={label}
           fullWidth
           error={!!errorMessage}

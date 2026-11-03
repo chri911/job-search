@@ -11,6 +11,7 @@ import {
 import type { ApplicationStatus, ViewMode } from "../types";
 import SearchIcon from "@mui/icons-material/Search";
 import TuneIcon from "@mui/icons-material/Tune";
+import { visuallyHidden } from "../constants/interviewLabels";
 
 interface FiltersBarProps {
   searchValue: string;
@@ -51,6 +52,7 @@ export const FiltersBar = ({
           onChange={(e) => onSearchChange(e.target.value)}
           sx={{ width: { xs: "100%", sm: 220 } }}
           slotProps={{
+            htmlInput: { "aria-label": "Search applications" },
             input: {
               startAdornment: (
                 <InputAdornment position="start">
@@ -63,7 +65,11 @@ export const FiltersBar = ({
             },
           }}
         />
+        <Box component="span" id="status-filter-label" sx={visuallyHidden}>
+          Filter by status
+        </Box>
         <Select
+          labelId="status-filter-label"
           size="small"
           value={statusFilter}
           onChange={(e) =>
@@ -91,6 +97,7 @@ export const FiltersBar = ({
         </Button>
       </Box>
       <ToggleButtonGroup
+        aria-label="View mode"
         value={viewMode}
         exclusive
         onChange={(_, newMode) => {

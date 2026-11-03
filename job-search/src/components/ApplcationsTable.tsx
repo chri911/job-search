@@ -15,10 +15,11 @@ import type { Application } from "../types";
 import { StatusChip } from "./StatusChip";
 import { CompanyAvatar } from "./CompanyAvatar";
 import { RowActionsMenu } from "./RowActionsMenu";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink, useNavigate } from "react-router-dom";
 import { formatDate, locationLabel } from "../utils/applicationFormat";
 import { ApplicationsPagination } from "./ApplicationPagination";
-
+import { Link } from "@mui/material";
+import { visuallyHidden } from "../constants/interviewLabels";
 interface ApplicationsTableProps {
   applications: Application[];
   isLoading?: boolean;
@@ -78,7 +79,7 @@ export const ApplicationsTable = ({
           minWidth: 760,
         }}
       >
-        <Table sx={{ minWidth: 760 }}>
+        <Table aria-label="Applications" sx={{ minWidth: 760 }}>
           <TableHead>
             <TableRow
               sx={{
@@ -131,9 +132,16 @@ export const ApplicationsTable = ({
                       sx={{ display: "flex", alignItems: "center", gap: 1.5 }}
                     >
                       <CompanyAvatar company={app.company} />
-                      <Typography sx={{ fontWeight: 600, fontSize: 14 }}>
+                      <Link
+                        component={RouterLink}
+                        to={`/applications/${app.id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        underline="hover"
+                        color="text.primary"
+                        sx={{ fontWeight: 600, fontSize: 14 }}
+                      >
                         {app.company}
-                      </Typography>
+                      </Link>
                     </Box>
                   </TableCell>
                   <TableCell>
@@ -183,6 +191,9 @@ export const ApplicationsTable = ({
           </TableBody>
         </Table>
       </TableContainer>
+      <Box role="status" sx={visuallyHidden}>
+        {isLoading ? "Loading applications" : `${total} applications found`}
+      </Box>
       <ApplicationsPagination
         total={total}
         page={page}

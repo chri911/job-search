@@ -1,9 +1,12 @@
 import { Box, Paper, Skeleton, Typography } from "@mui/material";
-import { interviewTypeLabels } from "../constants/interviewLabels";
-import { useNavigate } from "react-router-dom";
+import {
+  interviewTypeLabels,
+  visuallyHidden,
+} from "../constants/interviewLabels";
 import type { InterviewWithApplication } from "../types";
 import { useUpcomingInterviews } from "../hooks/useUpcomingInterviews";
 import { QueryErrorState } from "./errors/QueryErrorState";
+import { Link as RouterLink } from "react-router-dom";
 
 const LIST_LIMIT = 5;
 const ROW_HEIGHT = 64;
@@ -41,14 +44,14 @@ const DateBadge = ({ dateString }: { dateString: string }) => {
 };
 
 function InterviewRow({ interview }: { interview: InterviewWithApplication }) {
-  const navigate = useNavigate();
   const time = new Date(interview.scheduledAt).toLocaleTimeString("en-GB", {
     hour: "2-digit",
     minute: "2-digit",
   });
   return (
     <Box
-      onClick={() => navigate(`/applications/${interview.applicationId}`)}
+      component={RouterLink}
+      to={`/applications/${interview.applicationId}`}
       sx={{
         display: "flex",
         flexDirection: "row",
@@ -58,6 +61,8 @@ function InterviewRow({ interview }: { interview: InterviewWithApplication }) {
         px: 1,
         borderRadius: 2,
         cursor: "pointer",
+        textDecoration: "none",
+        color: "inherit",
         "&:hover": { bgcolor: "action.hover" },
       }}
     >
@@ -71,7 +76,18 @@ function InterviewRow({ interview }: { interview: InterviewWithApplication }) {
           {interview.interviewerName && ` · ${interview.interviewerName}`}
         </Typography>
       </Box>
-      <Typography sx={{ fontSize: 14, color: "text.secondary" }}>
+      <Typography
+        component="time"
+        dateTime={interview.scheduledAt}
+        sx={{ fontSize: 14, color: "text.secondary" }}
+      >
+        <Box component="span" sx={visuallyHidden}>
+          {new Date(interview.scheduledAt).toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "long",
+          })}
+          ,{" "}
+        </Box>
         {time}
       </Typography>
     </Box>

@@ -12,7 +12,6 @@ interface Props {
 
 export const ResponsiveDialog = ({ open, onClose, title, children }: Props) => {
   const { isPhone } = useBreakpoints();
-
   return (
     <Dialog
       open={open}

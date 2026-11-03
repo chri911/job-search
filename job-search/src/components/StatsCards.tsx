@@ -32,7 +32,7 @@ const StatsCard = ({
       <Typography sx={{ color: "text.secondary", fontSize: 14, mb: 1 }}>
         {label}
       </Typography>
-      <Typography variant="h4" sx={{ fontWeight: 700, mb: 0.5 }}>
+      <Typography component="p" sx={{ fontWeight: 700, mb: 0.5 }}>
         {value}
       </Typography>
       {(hintValue || hintLabel) && (
@@ -41,7 +41,7 @@ const StatsCard = ({
             <Box
               component="span"
               sx={{
-                color: hintTone === "negative" ? "error.main" : "success.main",
+                color: hintTone === "negative" ? "error.main" : "success.dark",
                 fontWeight: 600,
               }}
             >

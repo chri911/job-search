@@ -34,13 +34,14 @@ export const theme = createTheme({
     },
     text: {
       primary: "#171B26",
-      secondary: "#6B7280",
+      secondary: "#4B5563",
     },
     success: {
-      main: "#22C55E", // Offer
+      main: "#22C55E",
+      dark: "#15803D", // Offer
     },
     error: {
-      main: "#EF4444", // Rejected
+      main: "#DC2626", // Rejected
     },
     info: {
       main: "#3B82F6", // Applied

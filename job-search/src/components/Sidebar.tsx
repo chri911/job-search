@@ -130,7 +130,11 @@ export const Sidebar = ({ user, mobileOpen, onMobileClose }: SidebarProps) => {
 
   return (
     <>
-      <Box sx={{ display: { xs: "none", lg: "block" }, height: "100%" }}>
+      <Box
+        component="nav"
+        aria-label="Main"
+        sx={{ display: { xs: "none", lg: "block" }, height: "100%" }}
+      >
         {content}
       </Box>
       <Drawer

@@ -100,9 +100,10 @@ export const ApplicationsForm = ({
         <Controller
           name="workMode"
           control={control}
-          render={({ field }) => (
+          render={({ field: { ref, ...field } }) => (
             <TextField
               {...field}
+              inputRef={ref}
               select
               label="Work mode"
               fullWidth
@@ -120,9 +121,10 @@ export const ApplicationsForm = ({
         <Controller
           name="status"
           control={control}
-          render={({ field }) => (
+          render={({ field: { ref, ...field } }) => (
             <TextField
               {...field}
+              inputRef={ref}
               select
               label="Status"
               fullWidth
@@ -140,9 +142,10 @@ export const ApplicationsForm = ({
         <Controller
           name="appliedAt"
           control={control}
-          render={({ field }) => (
+          render={({ field: { ref, ...field } }) => (
             <TextField
               {...field}
+              inputRef={ref}
               type="date"
               label="Applied date"
               fullWidth
