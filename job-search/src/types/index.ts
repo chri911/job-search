@@ -30,11 +30,11 @@ export interface Application {
   location: string;
   workMode: "remote" | "onsite" | "hybrid";
   status: ApplicationStatus;
-  nextStep: string;
-  nextStepDate: string;
+  nextStep?: string;
+  nextStepDate?: string;
   appliedAt: string;
-  contacts: Contact[];
-  interviews: Interview[];
+  contacts?: Contact[];
+  interviews?: Interview[];
 }
 
 export interface PaginatedResponse<T> {
