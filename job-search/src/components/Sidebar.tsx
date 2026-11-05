@@ -80,8 +80,8 @@ export const Sidebar = ({ user, mobileOpen, onMobileClose }: SidebarProps) => {
                 px: 2,
                 py: 1,
                 color: "rgba(255,255,255,0.6)",
-                "&.Mui-selected": {
-                  bgcolor: "rgba(255,255,255,0.08)",
+                '&[aria-current="page"]': {
+                  bgcolor: "rgba(255,255,255,0.14)",
                   color: "#fff",
                 },
                 "&.Mui-selected:hover": {
