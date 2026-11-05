@@ -14,9 +14,6 @@ export function TopBar({ actions, onMenuClick }: TopBarProps) {
       component="header"
       sx={{
         height: TOPBAR_HEIGHT,
-        px: { xs: 2, md: 4 },
-        display: "flex",
-        alignItems: "center",
         borderBottom: "1px solid #EDEFF3",
         flexShrink: 0,
       }}
@@ -24,7 +21,9 @@ export function TopBar({ actions, onMenuClick }: TopBarProps) {
       <Box
         sx={{
           height: "100%",
+          width: "100%",
           maxWidth: CONTENT_MAX_WIDTH,
+          flexDirection: "row",
           mx: "auto",
           px: pageGutter,
           display: "flex",
@@ -39,8 +38,10 @@ export function TopBar({ actions, onMenuClick }: TopBarProps) {
         >
           <MenuIcon />
         </IconButton>
+        <Box sx={{ display: "flex", alignItems: "center", ml: "auto" }}>
+          {actions}
+        </Box>
       </Box>
-      <Box sx={{ ml: "auto" }}>{actions}</Box>
     </Box>
   );
 }

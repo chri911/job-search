@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "api": "tsx watch server/index.ts",
+    "api": "node --watch mock-api/index.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",

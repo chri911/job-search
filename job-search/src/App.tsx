@@ -1,9 +1,9 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { Alert, Box, Button, Snackbar } from "@mui/material";
+import { Alert, Box, Button, Snackbar, Skeleton } from "@mui/material";
 import { Sidebar } from "./components/Sidebar";
 import { TopBar } from "./components/TopBar";
 import { ContentContainer } from "./components/ContentContainer";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import type { Application } from "./types";
 import { ApplicationsDialog } from "./components/ApplicationsDialog";
 import { useBreakpoints } from "./hooks/useBreakpoints";
@@ -88,14 +88,18 @@ export const App = () => {
                 onError={logError}
                 resetKeys={[location.pathname]}
               >
-                <Outlet
-                  context={
-                    {
-                      openApplicationDialog,
-                      showSnackbar,
-                    } satisfies AppContextType
-                  }
-                />
+                <Suspense
+                  fallback={<Skeleton variant="rounded" height={320} />}
+                >
+                  <Outlet
+                    context={
+                      {
+                        openApplicationDialog,
+                        showSnackbar,
+                      } satisfies AppContextType
+                    }
+                  />
+                </Suspense>
               </ErrorBoundary>
             )}
           </QueryErrorResetBoundary>

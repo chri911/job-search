@@ -23,10 +23,11 @@ const StatsCard = ({
     <Paper
       elevation={0}
       sx={{
+        height: "100%",
         p: { xs: 2, sm: 2.5 },
         border: "1px solid",
         borderColor: "divider",
-        borderRadius: 3,
+        borderRadius: 1.5,
       }}
     >
       <Typography sx={{ color: "text.secondary", fontSize: 14, mb: 1 }}>
@@ -36,7 +37,9 @@ const StatsCard = ({
         {value}
       </Typography>
       {(hintValue || hintLabel) && (
-        <Typography sx={{ fontSize: 13, color: "text.primary" }}>
+        <Typography
+          sx={{ fontSize: 13, color: "text.primary", minHeight: "1.5em" }}
+        >
           {hintValue && (
             <Box
               component="span"
@@ -84,9 +87,10 @@ const buildCards = (stats: DashboardStats | undefined): StatsCardProps[] => {
     {
       label: "Interviews",
       value: stats?.interviews ?? 0,
-      hintLabel: stats?.interviewsScheduledNext
-        ? `${stats.interviewsScheduledNext} scheduled next`
+      hintValue: stats?.interviewsScheduledNext
+        ? String(stats.interviewsScheduledNext)
         : undefined,
+      hintLabel: stats?.interviewsScheduledNext ? "scheduled next" : undefined,
     },
     {
       label: "Response rate",
@@ -100,9 +104,10 @@ const buildCards = (stats: DashboardStats | undefined): StatsCardProps[] => {
     {
       label: "Offers",
       value: stats?.offers ?? 0,
-      hintLabel: stats?.offersAwaitingReply
-        ? `${stats.offersAwaitingReply} awaiting reply`
+      hintValue: stats?.offersAwaitingReply
+        ? `${stats.offersAwaitingReply}`
         : undefined,
+      hintLabel: stats?.offersAwaitingReply ? "awaiting reply" : undefined,
     },
   ];
 };

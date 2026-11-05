@@ -4,7 +4,7 @@ import { useBoardApplications } from "../hooks/useApplications";
 import type { AppContextType } from "../App";
 import { QueryErrorState } from "../components/errors/QueryErrorState";
 
-export const Pipeline = () => {
+const Pipeline = () => {
   const { showSnackbar } = useOutletContext<AppContextType>();
   const { data, isLoading, isError, error, refetch, isFetching } =
     useBoardApplications();
@@ -27,3 +27,5 @@ export const Pipeline = () => {
     </>
   );
 };
+
+export default Pipeline;

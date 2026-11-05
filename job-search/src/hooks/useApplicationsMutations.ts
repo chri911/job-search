@@ -85,7 +85,7 @@ export const useUpdateApplicationStatus = () => {
       return { previousQueries };
     },
 
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       context?.previousQueries.forEach(([queryKey, data]) => {
         queryClient.setQueryData(queryKey, data);
       });

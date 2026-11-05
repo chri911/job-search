@@ -24,7 +24,7 @@ import { QueryErrorState } from "../components/errors/QueryErrorState";
 
 type TabValue = "details" | "contacts" | "interviews" | "activity";
 
-export const ApplicationDetails = () => {
+const ApplicationDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const {
@@ -138,3 +138,5 @@ export const ApplicationDetails = () => {
     </Box>
   );
 };
+
+export default ApplicationDetails;

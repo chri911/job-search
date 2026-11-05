@@ -1,12 +1,13 @@
-// src/AppRoutes.tsx
+import { lazy } from "react";
 import { Route, Routes } from "react-router-dom";
 import { App } from "./App";
 import { Overview } from "./pages/Overview";
 import { Applications } from "./pages/Applications";
-import { ApplicationDetails } from "./pages/ApplicationDetails";
-import { Pipeline } from "./pages/Pipeline";
-import { Interviews } from "./pages/Interviews";
 import { NotFound } from "./pages/NotFound";
+
+const ApplicationDetails = lazy(() => import("./pages/ApplicationDetails"));
+const Pipeline = lazy(() => import("./pages/Pipeline"));
+const Interviews = lazy(() => import("./pages/Interviews"));
 
 export const AppRoutes = () => {
   return (
